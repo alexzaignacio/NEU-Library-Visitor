@@ -1,0 +1,5 @@
+{
+  "name": "NEU Library Visitor hh",
+  "description": "A library visitor logging system for NEU students, faculty, and employees with admin statistics and user management.",
+  "requestFramePermissions": []
+}

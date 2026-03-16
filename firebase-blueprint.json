@@ -1,0 +1,44 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A library user (student, faculty, or employee).",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "format": "email", "description": "Institutional email" },
+        "displayName": { "type": "string", "description": "Full name" },
+        "role": { "type": "string", "enum": ["admin", "user"], "description": "User role" },
+        "college_office": { "type": "string", "description": "College or Office the user belongs to" },
+        "isBlocked": { "type": "boolean", "description": "Whether the user is blocked from entering" },
+        "lastLogin": { "type": "string", "format": "date-time", "description": "Last login timestamp" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Account creation timestamp" }
+      },
+      "required": ["uid", "email", "role", "isBlocked", "createdAt", "lastLogin"]
+    },
+    "VisitLog": {
+      "title": "Visit Log",
+      "description": "A record of a library visit.",
+      "type": "object",
+      "properties": {
+        "userUid": { "type": "string", "description": "UID of the visitor" },
+        "email": { "type": "string", "description": "Email of the visitor" },
+        "displayName": { "type": "string", "description": "Name of the visitor" },
+        "college": { "type": "string", "description": "College/Office of the visitor" },
+        "reason": { "type": "string", "description": "Reason for visiting (reading, research, etc.)" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "Time of visit" }
+      },
+      "required": ["userUid", "reason", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile documents"
+    },
+    "/logs/{logId}": {
+      "schema": "VisitLog",
+      "description": "Library visit logs"
+    }
+  }
+}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db, collection, addDoc, Timestamp, query, where, orderBy, onSnapshot } from '../firebase';
 import { UserProfile, VisitLog } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
-import { BookOpen, Search, Monitor, GraduationCap, CheckCircle2, History, TrendingUp, Clock } from 'lucide-react';
+import { BookOpen, Search, Monitor, GraduationCap, CheckCircle2, History, TrendingUp, Clock, Landmark, PlayCircle, Users, Library } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { format } from 'date-fns';
 
@@ -10,15 +10,19 @@ interface Props {
   profile: UserProfile;
 }
 
-const REASONS = [
-  { id: 'reading', label: 'Reading', icon: BookOpen },
-  { id: 'research', label: 'Research', icon: Search },
-  { id: 'computer', label: 'Use of Computer', icon: Monitor },
-  { id: 'studying', label: 'Studying', icon: GraduationCap },
+const DESTINATIONS = [
+  { id: 'reading', label: 'Reading Area', icon: BookOpen },
+  { id: 'research', label: 'Research Section', icon: Search },
+  { id: 'computer', label: 'Computer Lab', icon: Monitor },
+  { id: 'studying', label: 'General Study', icon: GraduationCap },
+  { id: 'museum', label: 'NEU Museum', icon: Landmark },
+  { id: 'multimedia', label: 'Multimedia Room', icon: PlayCircle },
+  { id: 'group', label: 'Group Study', icon: Users },
+  { id: 'periodicals', label: 'Periodicals', icon: Library },
 ];
 
 export default function VisitorLog({ profile }: Props) {
-  const [reason, setReason] = useState('');
+  const [destination, setDestination] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState<VisitLog[]>([]);
@@ -47,8 +51,8 @@ export default function VisitorLog({ profile }: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!reason) {
-      toast.error('Please select a reason for your visit');
+    if (!destination) {
+      toast.error('Please select a destination for your visit');
       return;
     }
 
@@ -60,7 +64,7 @@ export default function VisitorLog({ profile }: Props) {
         displayName: profile.displayName,
         classification: profile.classification,
         college: profile.college_office,
-        reason: REASONS.find(r => r.id === reason)?.label || reason,
+        destination: DESTINATIONS.find(d => d.id === destination)?.label || destination,
         timestamp: Timestamp.now()
       });
       setSubmitted(true);
@@ -111,31 +115,31 @@ export default function VisitorLog({ profile }: Props) {
               Daily Attendance
             </div>
             <h2 className="text-4xl font-black tracking-tight mb-3 text-navy-900">Library Entry Log</h2>
-            <p className="text-slate-500 font-medium">Please select your primary reason for visiting today.</p>
+            <p className="text-slate-500 font-medium">Please select your primary destination today.</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-10">
-            <div className="grid grid-cols-2 gap-6">
-              {REASONS.map((r) => {
-                const Icon = r.icon;
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {DESTINATIONS.map((d) => {
+                const Icon = d.icon;
                 return (
                   <button
-                    key={r.id}
+                    key={d.id}
                     type="button"
-                    onClick={() => setReason(r.id)}
-                    className={`flex flex-col items-center justify-center p-10 rounded-[32px] border-2 transition-all gap-5 group relative overflow-hidden ${
-                      reason === r.id 
+                    onClick={() => setDestination(d.id)}
+                    className={`flex flex-col items-center justify-center p-6 rounded-[32px] border-2 transition-all gap-4 group relative overflow-hidden ${
+                      destination === d.id 
                         ? 'border-orange-brown bg-orange-brown/5 text-orange-brown shadow-xl shadow-orange-brown/10' 
                         : 'border-slate-100 bg-slate-50 text-slate-400 hover:bg-white hover:border-slate-200 hover:text-navy-900'
                     }`}
                   >
-                    <div className={`p-5 rounded-2xl transition-all ${reason === r.id ? 'bg-orange-brown text-white shadow-lg' : 'bg-white text-slate-400 border border-slate-100 group-hover:bg-slate-50 group-hover:border-slate-200 group-hover:text-navy-900'}`}>
-                      <Icon size={36} />
+                    <div className={`p-4 rounded-2xl transition-all ${destination === d.id ? 'bg-orange-brown text-white shadow-lg' : 'bg-white text-slate-400 border border-slate-100 group-hover:bg-slate-50 group-hover:border-slate-200 group-hover:text-navy-900'}`}>
+                      <Icon size={28} />
                     </div>
-                    <span className="font-black uppercase tracking-[0.15em] text-[11px]">{r.label}</span>
-                    {reason === r.id && (
+                    <span className="font-black uppercase tracking-[0.1em] text-[10px] text-center">{d.label}</span>
+                    {destination === d.id && (
                       <motion.div 
-                        layoutId="active-reason"
+                        layoutId="active-destination"
                         className="absolute inset-0 border-2 border-orange-brown rounded-[32px] pointer-events-none"
                       />
                     )}
@@ -146,7 +150,7 @@ export default function VisitorLog({ profile }: Props) {
 
             <button
               type="submit"
-              disabled={loading || !reason}
+              disabled={loading || !destination}
               className="w-full bg-orange-brown hover:bg-orange-600 text-white py-5 px-8 rounded-2xl font-black transition-all shadow-xl shadow-orange-brown/20 disabled:opacity-50 mt-4 uppercase tracking-[0.2em] text-xs active:scale-[0.98]"
             >
               {loading ? 'Recording...' : 'Confirm Entry'}
@@ -203,7 +207,7 @@ export default function VisitorLog({ profile }: Props) {
                   <div key={log.id} className="p-5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:border-slate-200 transition-colors group">
                     <div className="flex justify-between items-start mb-2">
                       <span className="text-[10px] font-black px-3 py-1 rounded-lg bg-white text-navy-900 uppercase tracking-widest border border-slate-200">
-                        {log.reason}
+                        {log.destination}
                       </span>
                       <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">
                         {format(log.timestamp.toDate(), 'MMM d, h:mm a')}

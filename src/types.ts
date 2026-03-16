@@ -22,6 +22,6 @@ export interface VisitLog {
   displayName: string;
   classification: string;
   college: string;
-  reason: string;
+  destination: string;
   timestamp: any;
 }

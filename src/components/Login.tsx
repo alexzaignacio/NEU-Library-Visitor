@@ -69,8 +69,8 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-[#f8fafc]">
-      {/* Left Side - Hero (60%) */}
-      <div className="hidden md:flex md:w-[60%] relative overflow-hidden bg-navy-900">
+      {/* Left Side - Hero (60% on desktop, top on mobile) */}
+      <div className="w-full md:w-[60%] h-[30vh] md:h-screen relative overflow-hidden bg-navy-900">
         <div className="absolute inset-0">
           <img 
             src="https://media.licdn.com/dms/image/v2/C4E1BAQF0X2-Pil2iag/company-background_10000/company-background_10000/0/1645461279672/new_era_university_qc_main_cover?e=2147483647&v=beta&t=W6qIZJWlKZS6mWA4ozpu_7zSMtSnOtt9Myf64qdMYUA" 
@@ -79,23 +79,23 @@ export default function Login() {
             referrerPolicy="no-referrer"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-navy-900 via-navy-900/60 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-navy-900 via-navy-900/60 to-transparent"></div>
         
-        <div className="relative z-10 flex flex-col justify-center px-16 lg:px-24">
+        <div className="relative z-10 flex flex-col justify-center h-full px-8 md:px-16 lg:px-24">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-5xl lg:text-7xl font-black text-white mb-8 tracking-tight leading-tight">
+            <h1 className="text-3xl md:text-5xl lg:text-7xl font-black text-white mb-4 md:mb-8 tracking-tight leading-tight">
               NEU Library <br />
               <span className="text-orange-brown">Visitor Portal</span>
             </h1>
-            <p className="text-xl text-blue-50 mb-12 max-w-lg leading-relaxed font-medium">
+            <p className="hidden md:block text-xl text-blue-50 mb-12 max-w-lg leading-relaxed font-medium">
               Welcome to the New Era University Library. Please sign in with your institutional account to access our services.
             </p>
 
-            <div className="space-y-6">
+            <div className="hidden md:block space-y-6">
               {[
                 'Secure Institutional Login',
                 'Real-time Visitor Management',
@@ -119,8 +119,8 @@ export default function Login() {
         </div>
       </div>
 
-      {/* Right Side - Login Form (40%) */}
-      <div className="flex-1 md:w-[40%] flex items-center justify-center p-6 bg-navy-900 md:bg-[#f8fafc]">
+      {/* Right Side - Login Form (40% on desktop, bottom on mobile) */}
+      <div className="w-full md:w-[40%] flex items-center justify-center p-6 bg-navy-900 md:bg-[#f8fafc]">
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}

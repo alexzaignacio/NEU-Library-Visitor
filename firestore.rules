@@ -26,7 +26,7 @@ service cloud.firestore {
     //   - email: string
     //   - displayName: string
     //   - college: string
-    //   - reason: string (required)
+    //   - destination: string (required)
     //   - timestamp: timestamp (required)
     //
     // ===============================================================
@@ -78,11 +78,11 @@ service cloud.firestore {
     }
 
     function isValidLog(data) {
-      return data.keys().hasAll(['userUid', 'reason', 'timestamp']) &&
+      return data.keys().hasAll(['userUid', 'destination', 'timestamp']) &&
              data.userUid == request.auth.uid &&
-             data.reason is string &&
-             data.reason.size() > 0 &&
-             data.reason.size() < 500 &&
+             data.destination is string &&
+             data.destination.size() > 0 &&
+             data.destination.size() < 500 &&
              data.timestamp is timestamp;
     }
 

@@ -26,10 +26,10 @@
         "email": { "type": "string", "description": "Email of the visitor" },
         "displayName": { "type": "string", "description": "Name of the visitor" },
         "college": { "type": "string", "description": "College/Office of the visitor" },
-        "reason": { "type": "string", "description": "Reason for visiting (reading, research, etc.)" },
+        "destination": { "type": "string", "description": "Visitor destination (Library, NEU Museum, etc.)" },
         "timestamp": { "type": "string", "format": "date-time", "description": "Time of visit" }
       },
-      "required": ["userUid", "reason", "timestamp"]
+      "required": ["userUid", "destination", "timestamp"]
     }
   },
   "firestore": {

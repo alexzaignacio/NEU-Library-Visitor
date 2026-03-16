@@ -83,18 +83,22 @@ export default function AdminDashboard({ profile }: Props) {
 
   const statsData = useMemo(() => {
     const counts: Record<string, number> = {
-      reading: 0,
-      research: 0,
-      computer: 0,
-      studying: 0
+      'Reading Area': 0,
+      'Research Section': 0,
+      'Computer Lab': 0,
+      'General Study': 0,
+      'NEU Museum': 0,
+      'Multimedia Room': 0,
+      'Group Study': 0,
+      'Periodicals': 0
     };
     filteredLogs.forEach(log => {
-      if (log.reason && counts[log.reason.toLowerCase()] !== undefined) {
-        counts[log.reason.toLowerCase()]++;
+      if (log.destination && counts[log.destination] !== undefined) {
+        counts[log.destination]++;
       }
     });
     return Object.entries(counts).map(([name, value]) => ({ 
-      name: name.charAt(0).toUpperCase() + name.slice(1), 
+      name, 
       value 
     }));
   }, [filteredLogs]);
@@ -249,7 +253,7 @@ export default function AdminDashboard({ profile }: Props) {
                       <BarChart3 size={28} />
                     </div>
                   </div>
-                  <p className="text-slate-400 text-[11px] uppercase tracking-[0.2em] font-black mb-2">Top Reason</p>
+                  <p className="text-slate-400 text-[11px] uppercase tracking-[0.2em] font-black mb-2">Top Destination</p>
                   <h3 className="text-4xl font-black tracking-tight text-navy-900">
                     {statsData.sort((a, b) => b.value - a.value)[0]?.value > 0 
                       ? statsData.sort((a, b) => b.value - a.value)[0]?.name 
@@ -279,7 +283,7 @@ export default function AdminDashboard({ profile }: Props) {
                   <div className="bg-navy-900 p-3 rounded-xl text-white shadow-lg">
                     <BarChart3 size={20} />
                   </div>
-                  Visit Reasons
+                  Visitor Destinations
                 </h3>
                 <div className="h-[350px] w-full">
                   {filteredLogs.length > 0 ? (
@@ -367,7 +371,7 @@ export default function AdminDashboard({ profile }: Props) {
                     <th className="p-8 pl-10">Visitor</th>
                     <th className="p-8">Classification</th>
                     <th className="p-8">College/Office</th>
-                    <th className="p-8">Reason</th>
+                    <th className="p-8">Destination</th>
                     <th className="p-8 pr-10">Time</th>
                   </tr>
                 </thead>
@@ -391,7 +395,7 @@ export default function AdminDashboard({ profile }: Props) {
                         <td className="p-8 text-xs text-slate-500 font-bold uppercase tracking-widest">{log.college}</td>
                         <td className="p-8">
                           <span className="text-[9px] font-black px-4 py-2 rounded-xl bg-orange-brown/5 text-orange-brown uppercase tracking-[0.2em] border border-orange-brown/10">
-                            {log.reason}
+                            {log.destination}
                           </span>
                         </td>
                         <td className="p-8 pr-10 text-[10px] text-slate-400 font-black uppercase tracking-widest">

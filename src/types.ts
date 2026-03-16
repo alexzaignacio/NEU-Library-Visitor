@@ -1,4 +1,5 @@
 export type UserRole = 'admin' | 'student' | 'faculty' | 'staff';
+export type UserStatus = 'approved' | 'pending_approval';
 export type UserClassification = 'Student' | 'Faculty' | 'Staff' | 'Admin';
 
 export interface UserProfile {
@@ -6,6 +7,7 @@ export interface UserProfile {
   email: string;
   displayName: string;
   role: UserRole;
+  status: UserStatus;
   classification?: UserClassification;
   college_office?: string;
   isBlocked: boolean;

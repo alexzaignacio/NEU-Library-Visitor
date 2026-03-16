@@ -71,15 +71,15 @@ export default function Login() {
     <div className="min-h-screen flex flex-col md:flex-row bg-[#f8fafc]">
       {/* Left Side - Hero */}
       <div className="hidden md:flex md:w-1/2 relative overflow-hidden bg-navy-900">
-        <div className="absolute inset-0 opacity-50">
+        <div className="absolute inset-0">
           <img 
-            src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&q=80&w=2000" 
-            alt="Library" 
-            className="w-full h-full object-cover"
+            src="https://neu.edu.ph/main/assets/images/NEU_Main2.jpg" 
+            alt="NEU Campus" 
+            className="w-full h-full object-cover opacity-60"
             referrerPolicy="no-referrer"
           />
         </div>
-        <div className="absolute inset-0 bg-navy-900/80"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-navy-900 via-navy-900/40 to-transparent"></div>
         
         <div className="relative z-10 flex flex-col justify-center px-16 lg:px-24">
           <motion.div
@@ -87,34 +87,39 @@ export default function Login() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="bg-white/10 backdrop-blur-md w-16 h-16 rounded-2xl flex items-center justify-center mb-10 border border-white/20">
-              <GraduationCap size={32} className="text-[#a78bfa]" />
+            <div className="bg-white p-4 w-24 h-24 rounded-full flex items-center justify-center mb-10 shadow-2xl ring-4 ring-orange-brown/20">
+              <img 
+                src="https://upload.wikimedia.org/wikipedia/en/0/0e/New_Era_University_logo.png" 
+                alt="NEU Logo" 
+                className="w-full h-full object-contain"
+                referrerPolicy="no-referrer"
+              />
             </div>
-            <h1 className="text-5xl lg:text-6xl font-bold text-white mb-8 tracking-tight leading-tight">
+            <h1 className="text-5xl lg:text-6xl font-black text-white mb-8 tracking-tight leading-tight">
               NEU Library <br />
-              Portal
+              <span className="text-orange-brown">Visitor Portal</span>
             </h1>
-            <p className="text-lg text-slate-300 mb-12 max-w-lg leading-relaxed">
-              Empowering the university community with a modern, secure, and streamlined library visitor management system.
+            <p className="text-lg text-blue-50 mb-12 max-w-lg leading-relaxed font-medium">
+              Welcome to the New Era University Library. Please sign in with your institutional account to access our services.
             </p>
 
             <div className="space-y-6">
               {[
-                'Secure Role-Based Access',
-                'Real-time Visitor Tracking',
-                'Audit Trail & Analytics'
+                'Secure Institutional Login',
+                'Real-time Visitor Management',
+                'Automated Approval System'
               ].map((feature, i) => (
                 <motion.div 
                   key={feature}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.4 + (i * 0.1) }}
-                  className="flex items-center gap-4 text-slate-300"
+                  className="flex items-center gap-4 text-blue-50"
                 >
-                  <div className="bg-white/20 p-1 rounded-full backdrop-blur-sm">
+                  <div className="bg-orange-brown p-1 rounded-full shadow-lg">
                     <CheckCircle2 size={16} className="text-white" />
                   </div>
-                  <span className="text-sm font-medium">{feature}</span>
+                  <span className="text-sm font-bold tracking-wide">{feature}</span>
                 </motion.div>
               ))}
             </div>
@@ -123,24 +128,31 @@ export default function Login() {
       </div>
 
       {/* Right Side - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-6">
+      <div className="flex-1 flex items-center justify-center p-6 bg-white">
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md w-full bg-white p-10 md:p-14 rounded-[40px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] border border-slate-100"
+          className="max-w-md w-full bg-white p-10 md:p-14 rounded-[40px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-slate-100 relative overflow-hidden"
         >
+          <div className="absolute top-0 left-0 w-full h-2 bg-orange-brown"></div>
+          
           <div className="text-center mb-10">
-            <div className="bg-gradient-to-br from-[#2563eb] to-[#1d4ed8] w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg shadow-blue-500/20">
-              <GraduationCap size={32} className="text-white" />
+            <div className="md:hidden bg-white p-3 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl ring-2 ring-slate-100">
+              <img 
+                src="https://upload.wikimedia.org/wikipedia/en/0/0e/New_Era_University_logo.png" 
+                alt="NEU Logo" 
+                className="w-full h-full object-contain"
+                referrerPolicy="no-referrer"
+              />
             </div>
-            <h2 className="text-3xl font-bold text-slate-900 mb-2">Welcome back</h2>
-            <p className="text-slate-500 text-sm">Sign in with your university account</p>
+            <h2 className="text-3xl font-black text-navy-900 mb-2 tracking-tight">Welcome Back</h2>
+            <p className="text-slate-500 text-sm font-medium">Sign in to your university account</p>
           </div>
           
           <div className="space-y-6">
             <button
               onClick={handleGoogleLogin}
-              className="w-full flex items-center justify-center gap-3 bg-[#2563eb] hover:bg-[#1d4ed8] text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-blue-500/20"
+              className="w-full flex items-center justify-center gap-3 bg-navy-800 hover:bg-navy-900 text-white py-4 rounded-2xl font-black uppercase tracking-widest transition-all shadow-xl shadow-navy-900/20 active:scale-[0.98]"
             >
               <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5 bg-white rounded-full p-0.5" />
               Sign in with Google

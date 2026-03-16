@@ -9,6 +9,7 @@
         "email": { "type": "string", "format": "email", "description": "Institutional email" },
         "displayName": { "type": "string", "description": "Full name" },
         "role": { "type": "string", "enum": ["admin", "student", "faculty", "staff"], "description": "User role" },
+        "status": { "type": "string", "enum": ["approved", "pending_approval"], "description": "Account approval status" },
         "college_office": { "type": "string", "description": "College or Office the user belongs to" },
         "isBlocked": { "type": "boolean", "description": "Whether the user is blocked from entering" },
         "lastLogin": { "type": "string", "format": "date-time", "description": "Last login timestamp" },

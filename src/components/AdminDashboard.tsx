@@ -13,7 +13,8 @@ import {
   Filter,
   ArrowRight,
   TrendingUp,
-  Clock
+  Clock,
+  ShieldCheck
 } from 'lucide-react';
 import { format, startOfDay, endOfDay, startOfWeek, startOfMonth, subDays, isWithinInterval } from 'date-fns';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
@@ -23,7 +24,7 @@ interface Props {
   profile: UserProfile;
 }
 
-type Tab = 'stats' | 'logs' | 'users';
+type Tab = 'stats' | 'logs' | 'users' | 'approvals';
 
 export default function AdminDashboard({ profile }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>('stats');
@@ -88,6 +89,17 @@ export default function AdminDashboard({ profile }: Props) {
     }));
   }, [filteredLogs]);
 
+  const handleApproveUser = async (userUid: string) => {
+    try {
+      await updateDoc(doc(db, 'users', userUid), {
+        status: 'approved'
+      });
+      toast.success('User account approved');
+    } catch (error) {
+      toast.error('Failed to approve user');
+    }
+  };
+
   const handleBlockUser = async (userUid: string, currentlyBlocked: boolean) => {
     try {
       await updateDoc(doc(db, 'users', userUid), {
@@ -99,9 +111,12 @@ export default function AdminDashboard({ profile }: Props) {
     }
   };
 
+  const pendingUsers = users.filter(u => u.status === 'pending_approval');
+
   const filteredUsers = users.filter(u => 
-    u.displayName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    u.email.toLowerCase().includes(searchTerm.toLowerCase())
+    (u.displayName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    u.email.toLowerCase().includes(searchTerm.toLowerCase())) &&
+    u.status === 'approved'
   );
 
   const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6'];
@@ -110,17 +125,22 @@ export default function AdminDashboard({ profile }: Props) {
     <div className="space-y-10">
       {/* Navigation Tabs */}
       <div className="flex gap-2 bg-navy-800 p-2 rounded-2xl shadow-sm border border-white/10 w-fit mx-auto">
-        {(['stats', 'logs', 'users'] as Tab[]).map((tab) => (
+        {(['stats', 'logs', 'users', 'approvals'] as Tab[]).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-10 py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all ${
+            className={`px-10 py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all relative ${
               activeTab === tab 
                 ? 'bg-white text-navy-900 shadow-lg' 
                 : 'text-blue-100 hover:text-white hover:bg-white/5'
             }`}
           >
             {tab}
+            {tab === 'approvals' && pendingUsers.length > 0 && (
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-orange-brown text-white text-[10px] rounded-full flex items-center justify-center border-2 border-navy-800">
+                {pendingUsers.length}
+              </span>
+            )}
           </button>
         ))}
       </div>
@@ -317,6 +337,59 @@ export default function AdminDashboard({ profile }: Props) {
                   )}
                 </tbody>
               </table>
+            </div>
+          </motion.div>
+        )}
+
+        {activeTab === 'approvals' && (
+          <motion.div 
+            key="approvals"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="space-y-8"
+          >
+            <div className="bg-navy-800 p-10 rounded-[40px] shadow-sm border border-white/10">
+              <h3 className="text-xl font-black mb-10 flex items-center gap-4 text-white">
+                <div className="bg-white/5 p-3 rounded-xl text-white border border-white/10">
+                  <ShieldCheck size={20} />
+                </div>
+                Pending Approvals
+              </h3>
+              
+              {pendingUsers.length === 0 ? (
+                <div className="text-center py-20 text-blue-200 font-black uppercase tracking-widest text-xs italic">
+                  No pending approval requests.
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-6">
+                  {pendingUsers.map((u) => (
+                    <div key={u.uid} className="bg-navy-900/50 p-8 rounded-[32px] border border-white/10 flex justify-between items-center group hover:border-orange-brown/50 transition-all">
+                      <div className="flex items-center gap-6">
+                        <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center text-navy-900 font-black text-3xl shadow-lg">
+                          {u.displayName.charAt(0)}
+                        </div>
+                        <div>
+                          <h4 className="font-black text-white text-lg">{u.displayName}</h4>
+                          <p className="text-[10px] text-blue-200 font-black uppercase tracking-widest mb-3">{u.email}</p>
+                          <div className="flex gap-3">
+                            <span className="text-[9px] font-black text-white bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl uppercase tracking-[0.2em]">{u.classification}</span>
+                            <span className="text-[9px] font-black text-blue-200 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl uppercase tracking-[0.2em]">{u.college_office}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex gap-4">
+                        <button
+                          onClick={() => handleApproveUser(u.uid)}
+                          className="px-8 py-3 bg-orange-brown hover:bg-orange-600 text-white rounded-xl font-black uppercase tracking-widest text-[10px] transition-all shadow-xl shadow-orange-brown/20"
+                        >
+                          Approve Account
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </motion.div>
         )}

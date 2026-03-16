@@ -4,14 +4,15 @@
 @theme {
   --font-serif: "Cormorant Garamond", serif;
   --font-sans: "Inter", sans-serif;
-  --color-navy-900: #001A3D;
-  --color-navy-800: #002659;
-  --color-navy-700: #003373;
+  --color-navy-900: #001A33;
+  --color-navy-800: #002147;
+  --color-navy-700: #003366;
+  --color-orange-brown: #B3541E;
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: #001A3D;
+  background-color: var(--color-navy-900);
   color: #FFFFFF;
 }
 

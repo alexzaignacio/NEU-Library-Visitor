@@ -38,7 +38,7 @@ export default function App() {
       setLoading(true);
       if (firebaseUser) {
         const email = firebaseUser.email;
-        const isSuperAdmin = email === 'alexzagayle.ignacio@neu.edu.ph' || email === 'jcesperanza@neu.edu.ph';
+        const isSuperAdmin = email === 'jcesperanza@neu.edu.ph';
 
         if (email && !email.endsWith('@neu.edu.ph') && !isSuperAdmin) {
           await auth.signOut();
@@ -64,10 +64,11 @@ export default function App() {
               return;
             }
 
-            // Auto-upgrade alex to admin if not already
+            // Auto-upgrade jcesperanza to admin if not already
             if (isSuperAdmin && data.role !== 'admin') {
-              await updateDoc(userRef, { role: 'admin' });
+              await updateDoc(userRef, { role: 'admin', status: 'approved' });
               data.role = 'admin';
+              data.status = 'approved';
             }
             
             await updateDoc(userRef, { lastLogin: Timestamp.now() });
@@ -85,11 +86,14 @@ export default function App() {
               uid: firebaseUser.uid,
               email: firebaseUser.email || '',
               displayName: firebaseUser.displayName || 'Anonymous',
-              role: isInitialAdmin ? 'admin' : 'user',
+              role: isInitialAdmin ? 'admin' : 'student', // Default to student if not super admin
+              status: isInitialAdmin ? 'approved' : 'approved', // We'll set status in ProfileSetup or here
               isBlocked: false,
               lastLogin: Timestamp.now(),
               createdAt: Timestamp.now(),
             };
+            // Actually, let's set status based on role in ProfileSetup.
+            // For now, just create the doc.
             await setDoc(userRef, newProfile);
             setProfile(newProfile);
             setViewMode(isInitialAdmin ? 'admin' : 'student');
@@ -211,6 +215,26 @@ export default function App() {
                     </div>
                     <h2 className="text-4xl font-black text-white mb-4 tracking-tight">Access Denied</h2>
                     <p className="text-blue-100 max-w-md mx-auto leading-relaxed">Your account has been restricted from accessing the library portal. Please contact the University Administration for resolution.</p>
+                  </motion.div>
+                ) : (profile?.status === 'pending_approval' && profile?.role !== 'admin') ? (
+                  <motion.div 
+                    key="pending"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="bg-navy-800 p-16 rounded-[40px] shadow-2xl text-center border border-white/10 ring-1 ring-white/5"
+                  >
+                    <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-8 text-orange-400">
+                      <ShieldCheck size={48} />
+                    </div>
+                    <h2 className="text-4xl font-black text-white mb-4 tracking-tight">Pending Approval</h2>
+                    <p className="text-blue-100 max-w-md mx-auto leading-relaxed">Your account is currently awaiting administrative approval. Please check back later or contact your department head.</p>
+                    <button 
+                      onClick={handleLogout}
+                      className="mt-8 px-8 py-3 bg-white text-navy-900 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-50 transition-all"
+                    >
+                      Sign Out
+                    </button>
                   </motion.div>
                 ) : (viewMode === 'admin' && profile?.role === 'admin') ? (
                   <motion.div key="admin" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>

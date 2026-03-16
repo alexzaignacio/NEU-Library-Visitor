@@ -124,7 +124,7 @@ export default function AdminDashboard({ profile }: Props) {
   return (
     <div className="space-y-10">
       {/* Navigation Tabs */}
-      <div className="flex gap-2 bg-white p-2 rounded-2xl shadow-2xl border border-slate-100 w-fit mx-auto">
+      <div className="flex gap-2 bg-white p-2 rounded-2xl shadow-2xl border border-navy-900/10 w-fit mx-auto">
         {(['stats', 'logs', 'users', 'approvals'] as Tab[]).map((tab) => (
           <button
             key={tab}
@@ -155,12 +155,12 @@ export default function AdminDashboard({ profile }: Props) {
             className="space-y-10"
           >
             {/* Filter Controls */}
-            <div className="bg-white p-6 rounded-[32px] shadow-2xl border border-slate-100 flex flex-wrap items-center justify-between gap-6">
+            <div className="bg-white p-6 rounded-[32px] shadow-2xl border border-navy-900/10 flex flex-wrap items-center justify-between gap-6">
               <div className="flex items-center gap-4">
-                <div className="bg-slate-50 p-3 rounded-xl text-navy-900 border border-slate-100">
+                <div className="bg-navy-900 p-3 rounded-xl text-white shadow-lg">
                   <Filter size={20} />
                 </div>
-                <span className="font-black uppercase tracking-[0.2em] text-[11px] text-slate-500">Analytics Filter</span>
+                <span className="font-black uppercase tracking-[0.2em] text-[11px] text-navy-900">Analytics Filter</span>
               </div>
               <div className="flex flex-wrap gap-3">
                 {(['today', 'weekly', 'monthly', 'custom'] as const).map((r) => (
@@ -214,7 +214,7 @@ export default function AdminDashboard({ profile }: Props) {
                 </div>
               </div>
 
-              <div className="bg-white p-10 rounded-[40px] shadow-2xl border border-slate-100 relative overflow-hidden group">
+              <div className="bg-white p-10 rounded-[40px] shadow-2xl border border-navy-900/10 relative overflow-hidden group">
                 <div className="absolute top-0 right-0 w-40 h-40 bg-orange-brown/5 rounded-full -mr-20 -mt-20 transition-transform group-hover:scale-125 blur-2xl"></div>
                 <div className="relative z-10">
                   <div className="flex justify-between items-start mb-8">
@@ -231,7 +231,7 @@ export default function AdminDashboard({ profile }: Props) {
                 </div>
               </div>
 
-              <div className="bg-white p-10 rounded-[40px] shadow-2xl border border-slate-100 relative overflow-hidden group">
+              <div className="bg-white p-10 rounded-[40px] shadow-2xl border border-navy-900/10 relative overflow-hidden group">
                 <div className="absolute top-0 right-0 w-40 h-40 bg-slate-100 rounded-full -mr-20 -mt-20 transition-transform group-hover:scale-125 blur-2xl"></div>
                 <div className="relative z-10">
                   <div className="flex justify-between items-start mb-8">
@@ -246,9 +246,9 @@ export default function AdminDashboard({ profile }: Props) {
             </div>
 
             {/* Chart */}
-            <div className="bg-white p-10 rounded-[40px] shadow-2xl border border-slate-100">
+            <div className="bg-white p-10 rounded-[40px] shadow-2xl border border-navy-900/10">
               <h3 className="text-xl font-black mb-10 flex items-center gap-4 text-navy-900">
-                <div className="bg-slate-50 p-3 rounded-xl text-navy-900 border border-slate-100">
+                <div className="bg-navy-900 p-3 rounded-xl text-white shadow-lg">
                   <BarChart3 size={20} />
                 </div>
                 Visitor Distribution
@@ -282,16 +282,16 @@ export default function AdminDashboard({ profile }: Props) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="bg-white rounded-[40px] shadow-2xl border border-slate-100 overflow-hidden"
+            className="bg-white rounded-[40px] shadow-2xl border border-navy-900/10 overflow-hidden"
           >
-            <div className="p-10 border-b border-slate-50 flex justify-between items-center">
-              <h3 className="text-xl font-black flex items-center gap-4 text-navy-900">
-                <div className="bg-slate-50 p-3 rounded-xl text-navy-900 border border-slate-100">
+            <div className="p-10 border-b border-slate-50 flex justify-between items-center bg-navy-900">
+              <h3 className="text-xl font-black flex items-center gap-4 text-white">
+                <div className="bg-white/10 p-3 rounded-xl text-white border border-white/10">
                   <History size={20} />
                 </div>
                 Recent Activity
               </h3>
-              <span className="text-[10px] font-black text-slate-500 bg-slate-50 border border-slate-100 px-4 py-2 rounded-xl uppercase tracking-[0.2em]">
+              <span className="text-[10px] font-black text-blue-100 bg-white/10 border border-white/10 px-4 py-2 rounded-xl uppercase tracking-[0.2em]">
                 {filteredLogs.length} Records
               </span>
             </div>
@@ -349,9 +349,9 @@ export default function AdminDashboard({ profile }: Props) {
             exit={{ opacity: 0, y: -20 }}
             className="space-y-8"
           >
-            <div className="bg-white p-10 rounded-[40px] shadow-2xl border border-slate-100">
+            <div className="bg-white p-10 rounded-[40px] shadow-2xl border border-navy-900/10">
               <h3 className="text-xl font-black mb-10 flex items-center gap-4 text-navy-900">
-                <div className="bg-slate-50 p-3 rounded-xl text-navy-900 border border-slate-100">
+                <div className="bg-navy-900 p-3 rounded-xl text-white shadow-lg">
                   <ShieldCheck size={20} />
                 </div>
                 Pending Approvals
@@ -402,7 +402,7 @@ export default function AdminDashboard({ profile }: Props) {
             exit={{ opacity: 0, y: -20 }}
             className="space-y-8"
           >
-            <div className="bg-white p-3 rounded-2xl shadow-2xl border border-slate-100 flex items-center gap-5 px-8">
+            <div className="bg-white p-3 rounded-2xl shadow-2xl border border-navy-900/10 flex items-center gap-5 px-8">
               <Search size={24} className="text-slate-400" />
               <input 
                 type="text" 
@@ -415,7 +415,7 @@ export default function AdminDashboard({ profile }: Props) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {filteredUsers.map((u) => (
-                <div key={u.uid} className="bg-white p-8 rounded-[40px] shadow-2xl border border-slate-100 flex justify-between items-center group hover:border-orange-brown/30 transition-all">
+                <div key={u.uid} className="bg-white p-8 rounded-[40px] shadow-2xl border border-navy-900/10 flex justify-between items-center group hover:border-orange-brown/30 transition-all">
                   <div className="flex items-center gap-6">
                     <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-black text-3xl shadow-lg ${u.isBlocked ? 'bg-red-500 text-white shadow-red-500/20' : 'bg-navy-900 text-white shadow-navy-900/20'}`}>
                       {u.displayName.charAt(0)}

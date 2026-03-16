@@ -73,13 +73,13 @@ export default function Login() {
       <div className="hidden md:flex md:w-1/2 relative overflow-hidden bg-navy-900">
         <div className="absolute inset-0">
           <img 
-            src="https://neu.edu.ph/main/assets/images/NEU_Main2.jpg" 
+            src="https://media.licdn.com/dms/image/v2/C4E1BAQF0X2-Pil2iag/company-background_10000/company-background_10000/0/1645461279672/new_era_university_qc_main_cover?e=2147483647&v=beta&t=W6qIZJWlKZS6mWA4ozpu_7zSMtSnOtt9Myf64qdMYUA" 
             alt="NEU Campus" 
             className="w-full h-full object-cover opacity-60"
             referrerPolicy="no-referrer"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-navy-900 via-navy-900/40 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-navy-900 via-navy-900/60 to-transparent"></div>
         
         <div className="relative z-10 flex flex-col justify-center px-16 lg:px-24">
           <motion.div
@@ -89,7 +89,7 @@ export default function Login() {
           >
             <div className="bg-white p-4 w-24 h-24 rounded-full flex items-center justify-center mb-10 shadow-2xl ring-4 ring-orange-brown/20">
               <img 
-                src="https://upload.wikimedia.org/wikipedia/en/0/0e/New_Era_University_logo.png" 
+                src="https://neu.edu.ph/main/img/neu.png" 
                 alt="NEU Logo" 
                 className="w-full h-full object-contain"
                 referrerPolicy="no-referrer"
@@ -128,18 +128,18 @@ export default function Login() {
       </div>
 
       {/* Right Side - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-6 bg-white">
+      <div className="flex-1 flex items-center justify-center p-6 bg-navy-900 md:bg-[#f8fafc]">
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md w-full bg-white p-10 md:p-14 rounded-[40px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-slate-100 relative overflow-hidden"
+          className="max-w-md w-full bg-white p-10 md:p-14 rounded-[40px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.2)] border border-navy-900/10 relative overflow-hidden"
         >
           <div className="absolute top-0 left-0 w-full h-2 bg-orange-brown"></div>
           
           <div className="text-center mb-10">
             <div className="md:hidden bg-white p-3 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl ring-2 ring-slate-100">
               <img 
-                src="https://upload.wikimedia.org/wikipedia/en/0/0e/New_Era_University_logo.png" 
+                src="https://neu.edu.ph/main/img/neu.png" 
                 alt="NEU Logo" 
                 className="w-full h-full object-contain"
                 referrerPolicy="no-referrer"
@@ -172,7 +172,7 @@ export default function Login() {
                     placeholder="Full Name"
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
-                    className="w-full px-6 py-4 bg-white border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-slate-900 placeholder:text-slate-400"
+                    className="w-full px-6 py-4 bg-white border border-slate-200 rounded-2xl focus:ring-2 focus:ring-orange-brown/20 focus:border-orange-brown outline-none transition-all text-slate-900 placeholder:text-slate-400"
                   />
                 </div>
               )}
@@ -182,7 +182,7 @@ export default function Login() {
                   placeholder="Institutional Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-6 py-4 bg-white border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-slate-900 placeholder:text-slate-400"
+                  className="w-full px-6 py-4 bg-white border border-slate-200 rounded-2xl focus:ring-2 focus:ring-orange-brown/20 focus:border-orange-brown outline-none transition-all text-slate-900 placeholder:text-slate-400"
                 />
               </div>
               <div className="space-y-1.5">
@@ -191,13 +191,13 @@ export default function Login() {
                   placeholder="••••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-6 py-4 bg-white border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-slate-900 placeholder:text-slate-400"
+                  className="w-full px-6 py-4 bg-white border border-slate-200 rounded-2xl focus:ring-2 focus:ring-orange-brown/20 focus:border-orange-brown outline-none transition-all text-slate-900 placeholder:text-slate-400"
                 />
               </div>
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#16a34a] hover:bg-[#15803d] text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50 mt-2"
+                className="w-full bg-orange-brown hover:bg-orange-brown/90 text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-orange-brown/20 disabled:opacity-50 mt-2 uppercase tracking-widest"
               >
                 {loading ? 'Processing...' : isSignUp ? 'Create Account' : 'Sign in with Email'}
               </button>

@@ -79,7 +79,7 @@ export default function ProfileSetup({ profile, onUpdate }: Props) {
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-[40px] shadow-2xl border border-slate-100"
+      className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-[40px] shadow-2xl border border-navy-900/10"
     >
       <div className="flex flex-col md:flex-row items-center gap-8 mb-12">
         <div className="bg-navy-900 p-5 rounded-[24px] text-white shadow-2xl shadow-navy-900/10">
@@ -140,7 +140,7 @@ export default function ProfileSetup({ profile, onUpdate }: Props) {
             <select
               value={college}
               onChange={(e) => setCollege(e.target.value)}
-              className="w-full p-6 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-orange-brown/20 outline-none transition-all appearance-none cursor-pointer font-bold text-navy-900 shadow-inner"
+              className="w-full p-6 bg-slate-50 border border-navy-900/10 rounded-2xl focus:ring-2 focus:ring-orange-brown/20 outline-none transition-all appearance-none cursor-pointer font-bold text-navy-900 shadow-inner"
             >
               <option value="" className="bg-white">-- Select Your College or Office --</option>
               {COLLEGES.map((c) => (

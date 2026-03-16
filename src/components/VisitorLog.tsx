@@ -79,7 +79,7 @@ export default function VisitorLog({ profile }: Props) {
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white p-16 rounded-[40px] shadow-2xl text-center border border-slate-100"
+          className="bg-white p-16 rounded-[40px] shadow-2xl text-center border border-navy-900/10"
         >
           <div className="bg-emerald-50 w-24 h-24 rounded-[32px] flex items-center justify-center mx-auto mb-8 text-emerald-500 shadow-inner">
             <CheckCircle2 size={48} />
@@ -104,7 +104,7 @@ export default function VisitorLog({ profile }: Props) {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="lg:col-span-3 bg-white p-12 rounded-[40px] shadow-2xl border border-slate-100"
+          className="lg:col-span-3 bg-white p-12 rounded-[40px] shadow-2xl border border-navy-900/10"
         >
           <div className="mb-12 text-center">
             <div className="inline-block px-4 py-1.5 bg-slate-50 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-400 border border-slate-100 mb-6">
@@ -181,7 +181,7 @@ export default function VisitorLog({ profile }: Props) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-2xl flex flex-col h-[500px]"
+            className="bg-white p-8 rounded-[40px] border border-navy-900/10 shadow-2xl flex flex-col h-[500px]"
           >
             <div className="flex items-center justify-between mb-8">
               <h3 className="text-xl font-black text-navy-900 flex items-center gap-3">

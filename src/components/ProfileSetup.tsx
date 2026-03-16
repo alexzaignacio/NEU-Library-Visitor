@@ -79,24 +79,24 @@ export default function ProfileSetup({ profile, onUpdate }: Props) {
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="max-w-4xl mx-auto bg-navy-800 p-8 md:p-12 rounded-[40px] shadow-2xl border border-white/10"
+      className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-[40px] shadow-2xl border border-slate-100"
     >
       <div className="flex flex-col md:flex-row items-center gap-8 mb-12">
-        <div className="bg-white p-5 rounded-[24px] text-navy-900 shadow-2xl shadow-navy-900/30">
+        <div className="bg-navy-900 p-5 rounded-[24px] text-white shadow-2xl shadow-navy-900/10">
           <Building2 size={36} />
         </div>
         <div className="text-center md:text-left">
-          <div className="inline-block px-3 py-1 bg-white/10 rounded-full text-[9px] font-black uppercase tracking-widest text-blue-300 border border-white/10 mb-3">
+          <div className="inline-block px-3 py-1 bg-slate-50 rounded-full text-[9px] font-black uppercase tracking-widest text-slate-400 border border-slate-100 mb-3">
             Onboarding
           </div>
-          <h2 className="text-4xl font-black tracking-tight text-white mb-2">Complete Your Profile</h2>
-          <p className="text-blue-100 font-medium">Select your classification and college to continue.</p>
+          <h2 className="text-4xl font-black tracking-tight text-navy-900 mb-2">Complete Your Profile</h2>
+          <p className="text-slate-500 font-medium">Select your classification and college to continue.</p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-12">
         <div className="space-y-6">
-          <label className="block text-[10px] font-black text-blue-100 uppercase tracking-[0.2em] ml-1">
+          <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">
             I am a...
           </label>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -107,17 +107,17 @@ export default function ProfileSetup({ profile, onUpdate }: Props) {
                 onClick={() => setRole(c.id as UserRole)}
                 className={`flex flex-col items-center p-8 rounded-[32px] border-2 transition-all duration-300 group relative overflow-hidden ${
                   role === c.id 
-                    ? `border-orange-brown bg-white/5 shadow-2xl shadow-orange-brown/20 scale-[1.02]` 
-                    : 'border-white/5 bg-navy-900/50 hover:border-white/20 hover:bg-navy-900'
+                    ? `border-orange-brown bg-orange-brown/5 shadow-2xl shadow-orange-brown/10 scale-[1.02]` 
+                    : 'border-slate-100 bg-slate-50 hover:border-slate-200 hover:bg-white'
                 }`}
               >
                 <div className={`p-4 rounded-2xl mb-4 transition-transform group-hover:scale-110 ${
-                  role === c.id ? 'bg-orange-brown text-white' : 'bg-white/5 text-blue-100'
+                  role === c.id ? 'bg-orange-brown text-white shadow-lg' : 'bg-white text-slate-400 border border-slate-100'
                 }`}>
                   <c.icon size={32} />
                 </div>
                 <span className={`text-lg font-black uppercase tracking-widest ${
-                  role === c.id ? 'text-white' : 'text-blue-100'
+                  role === c.id ? 'text-navy-900' : 'text-slate-400'
                 }`}>
                   {c.label}
                 </span>
@@ -133,21 +133,21 @@ export default function ProfileSetup({ profile, onUpdate }: Props) {
         </div>
 
         <div className="space-y-6">
-          <label className="block text-[10px] font-black text-blue-100 uppercase tracking-[0.2em] ml-1">
+          <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">
             College / Office
           </label>
           <div className="relative">
             <select
               value={college}
               onChange={(e) => setCollege(e.target.value)}
-              className="w-full p-6 bg-navy-900 border border-white/10 rounded-2xl focus:ring-2 focus:ring-orange-brown/50 outline-none transition-all appearance-none cursor-pointer font-bold text-white shadow-inner"
+              className="w-full p-6 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-orange-brown/20 outline-none transition-all appearance-none cursor-pointer font-bold text-navy-900 shadow-inner"
             >
-              <option value="" className="bg-navy-800">-- Select Your College or Office --</option>
+              <option value="" className="bg-white">-- Select Your College or Office --</option>
               {COLLEGES.map((c) => (
-                <option key={c} value={c} className="bg-navy-800">{c}</option>
+                <option key={c} value={c} className="bg-white">{c}</option>
               ))}
             </select>
-            <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-blue-300">
+            <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
               <Building2 size={20} />
             </div>
           </div>

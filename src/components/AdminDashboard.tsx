@@ -124,20 +124,20 @@ export default function AdminDashboard({ profile }: Props) {
   return (
     <div className="space-y-10">
       {/* Navigation Tabs */}
-      <div className="flex gap-2 bg-navy-800 p-2 rounded-2xl shadow-sm border border-white/10 w-fit mx-auto">
+      <div className="flex gap-2 bg-white p-2 rounded-2xl shadow-2xl border border-slate-100 w-fit mx-auto">
         {(['stats', 'logs', 'users', 'approvals'] as Tab[]).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`px-10 py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all relative ${
               activeTab === tab 
-                ? 'bg-white text-navy-900 shadow-lg' 
-                : 'text-blue-100 hover:text-white hover:bg-white/5'
+                ? 'bg-orange-brown text-white shadow-xl shadow-orange-brown/20' 
+                : 'text-slate-400 hover:text-navy-900 hover:bg-slate-50'
             }`}
           >
             {tab}
             {tab === 'approvals' && pendingUsers.length > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-orange-brown text-white text-[10px] rounded-full flex items-center justify-center border-2 border-navy-800">
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center border-2 border-white">
                 {pendingUsers.length}
               </span>
             )}
@@ -155,12 +155,12 @@ export default function AdminDashboard({ profile }: Props) {
             className="space-y-10"
           >
             {/* Filter Controls */}
-            <div className="bg-navy-800 p-6 rounded-[32px] shadow-sm border border-white/10 flex flex-wrap items-center justify-between gap-6">
+            <div className="bg-white p-6 rounded-[32px] shadow-2xl border border-slate-100 flex flex-wrap items-center justify-between gap-6">
               <div className="flex items-center gap-4">
-                <div className="bg-white/5 p-3 rounded-xl text-white border border-white/10">
+                <div className="bg-slate-50 p-3 rounded-xl text-navy-900 border border-slate-100">
                   <Filter size={20} />
                 </div>
-                <span className="font-black uppercase tracking-[0.2em] text-[11px] text-blue-100">Analytics Filter</span>
+                <span className="font-black uppercase tracking-[0.2em] text-[11px] text-slate-500">Analytics Filter</span>
               </div>
               <div className="flex flex-wrap gap-3">
                 {(['today', 'weekly', 'monthly', 'custom'] as const).map((r) => (
@@ -169,8 +169,8 @@ export default function AdminDashboard({ profile }: Props) {
                     onClick={() => setDateRange(r)}
                     className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
                       dateRange === r 
-                        ? 'bg-white text-navy-900 shadow-lg' 
-                        : 'bg-white/5 text-blue-100 hover:bg-white/10 hover:text-white border border-white/10'
+                        ? 'bg-orange-brown text-white shadow-xl shadow-orange-brown/20' 
+                        : 'bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-navy-900 border border-slate-100'
                     }`}
                   >
                     {r}
@@ -183,14 +183,14 @@ export default function AdminDashboard({ profile }: Props) {
                     type="date" 
                     value={customStart} 
                     onChange={(e) => setCustomStart(e.target.value)}
-                    className="bg-navy-900 border border-white/10 rounded-xl px-5 py-2.5 text-[10px] font-black uppercase tracking-widest outline-none focus:ring-2 focus:ring-white/20 text-white shadow-sm"
+                    className="bg-slate-50 border border-slate-100 rounded-xl px-5 py-2.5 text-[10px] font-black uppercase tracking-widest outline-none focus:ring-2 focus:ring-orange-brown/20 text-navy-900 shadow-sm"
                   />
-                  <span className="text-blue-200 font-black text-[10px]">TO</span>
+                  <span className="text-slate-400 font-black text-[10px]">TO</span>
                   <input 
                     type="date" 
                     value={customEnd} 
                     onChange={(e) => setCustomEnd(e.target.value)}
-                    className="bg-navy-900 border border-white/10 rounded-xl px-5 py-2.5 text-[10px] font-black uppercase tracking-widest outline-none focus:ring-2 focus:ring-white/20 text-white shadow-sm"
+                    className="bg-slate-50 border border-slate-100 rounded-xl px-5 py-2.5 text-[10px] font-black uppercase tracking-widest outline-none focus:ring-2 focus:ring-orange-brown/20 text-navy-900 shadow-sm"
                   />
                 </div>
               )}
@@ -198,7 +198,7 @@ export default function AdminDashboard({ profile }: Props) {
 
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="bg-navy-800 p-10 rounded-[40px] shadow-sm border border-white/10 relative overflow-hidden group">
+              <div className="bg-navy-900 p-10 rounded-[40px] shadow-2xl border border-white/5 relative overflow-hidden group">
                 <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -mr-20 -mt-20 transition-transform group-hover:scale-125 blur-2xl"></div>
                 <div className="relative z-10">
                   <div className="flex justify-between items-start mb-8">
@@ -214,16 +214,16 @@ export default function AdminDashboard({ profile }: Props) {
                 </div>
               </div>
 
-              <div className="bg-navy-800 p-10 rounded-[40px] shadow-sm border border-white/10 relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-40 h-40 bg-emerald-500/5 rounded-full -mr-20 -mt-20 transition-transform group-hover:scale-125 blur-2xl"></div>
+              <div className="bg-white p-10 rounded-[40px] shadow-2xl border border-slate-100 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-40 h-40 bg-orange-brown/5 rounded-full -mr-20 -mt-20 transition-transform group-hover:scale-125 blur-2xl"></div>
                 <div className="relative z-10">
                   <div className="flex justify-between items-start mb-8">
-                    <div className="bg-emerald-500 p-4 rounded-2xl text-white shadow-lg shadow-emerald-600/30">
+                    <div className="bg-orange-brown p-4 rounded-2xl text-white shadow-lg shadow-orange-brown/30">
                       <BarChart3 size={28} />
                     </div>
                   </div>
-                  <p className="text-blue-100 text-[11px] uppercase tracking-[0.2em] font-black mb-2">Top Reason</p>
-                  <h3 className="text-4xl font-black tracking-tight text-white">
+                  <p className="text-slate-400 text-[11px] uppercase tracking-[0.2em] font-black mb-2">Top Reason</p>
+                  <h3 className="text-4xl font-black tracking-tight text-navy-900">
                     {statsData.sort((a, b) => b.value - a.value)[0]?.value > 0 
                       ? statsData.sort((a, b) => b.value - a.value)[0]?.name 
                       : 'N/A'}
@@ -231,24 +231,24 @@ export default function AdminDashboard({ profile }: Props) {
                 </div>
               </div>
 
-              <div className="bg-navy-800 p-10 rounded-[40px] shadow-sm border border-white/10 relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-40 h-40 bg-amber-500/5 rounded-full -mr-20 -mt-20 transition-transform group-hover:scale-125 blur-2xl"></div>
+              <div className="bg-white p-10 rounded-[40px] shadow-2xl border border-slate-100 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-40 h-40 bg-slate-100 rounded-full -mr-20 -mt-20 transition-transform group-hover:scale-125 blur-2xl"></div>
                 <div className="relative z-10">
                   <div className="flex justify-between items-start mb-8">
-                    <div className="bg-amber-500 p-4 rounded-2xl text-white shadow-lg shadow-amber-600/30">
+                    <div className="bg-navy-900 p-4 rounded-2xl text-white shadow-lg">
                       <Clock size={28} />
                     </div>
                   </div>
-                  <p className="text-blue-100 text-[11px] uppercase tracking-[0.2em] font-black mb-2">Peak Time</p>
-                  <h3 className="text-4xl font-black tracking-tight text-white">10:00 AM</h3>
+                  <p className="text-slate-400 text-[11px] uppercase tracking-[0.2em] font-black mb-2">Peak Time</p>
+                  <h3 className="text-4xl font-black tracking-tight text-navy-900">10:00 AM</h3>
                 </div>
               </div>
             </div>
 
             {/* Chart */}
-            <div className="bg-navy-800 p-10 rounded-[40px] shadow-sm border border-white/10">
-              <h3 className="text-xl font-black mb-10 flex items-center gap-4 text-white">
-                <div className="bg-white/5 p-3 rounded-xl text-white border border-white/10">
+            <div className="bg-white p-10 rounded-[40px] shadow-2xl border border-slate-100">
+              <h3 className="text-xl font-black mb-10 flex items-center gap-4 text-navy-900">
+                <div className="bg-slate-50 p-3 rounded-xl text-navy-900 border border-slate-100">
                   <BarChart3 size={20} />
                 </div>
                 Visitor Distribution
@@ -282,23 +282,23 @@ export default function AdminDashboard({ profile }: Props) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="bg-navy-800 rounded-[40px] shadow-sm border border-white/10 overflow-hidden"
+            className="bg-white rounded-[40px] shadow-2xl border border-slate-100 overflow-hidden"
           >
-            <div className="p-10 border-b border-white/5 flex justify-between items-center">
-              <h3 className="text-xl font-black flex items-center gap-4 text-white">
-                <div className="bg-white/5 p-3 rounded-xl text-white border border-white/10">
+            <div className="p-10 border-b border-slate-50 flex justify-between items-center">
+              <h3 className="text-xl font-black flex items-center gap-4 text-navy-900">
+                <div className="bg-slate-50 p-3 rounded-xl text-navy-900 border border-slate-100">
                   <History size={20} />
                 </div>
                 Recent Activity
               </h3>
-              <span className="text-[10px] font-black text-white bg-white/5 border border-white/10 px-4 py-2 rounded-xl uppercase tracking-[0.2em]">
+              <span className="text-[10px] font-black text-slate-500 bg-slate-50 border border-slate-100 px-4 py-2 rounded-xl uppercase tracking-[0.2em]">
                 {filteredLogs.length} Records
               </span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-white/5 text-[10px] font-black uppercase tracking-[0.2em] text-blue-100">
+                  <tr className="bg-slate-50 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
                     <th className="p-8 pl-10">Visitor</th>
                     <th className="p-8">Classification</th>
                     <th className="p-8">College/Office</th>
@@ -306,30 +306,30 @@ export default function AdminDashboard({ profile }: Props) {
                     <th className="p-8 pr-10">Time</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <tbody className="divide-y divide-slate-50">
                   {filteredLogs.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="p-24 text-center text-blue-200 font-black uppercase tracking-widest text-xs italic">No records found for this period.</td>
+                      <td colSpan={5} className="p-24 text-center text-slate-300 font-black uppercase tracking-widest text-xs italic">No records found for this period.</td>
                     </tr>
                   ) : (
                     filteredLogs.map((log) => (
-                      <tr key={log.id} className="hover:bg-white/5 transition-colors group">
+                      <tr key={log.id} className="hover:bg-slate-50 transition-colors group">
                         <td className="p-8 pl-10">
-                          <p className="font-bold text-white group-hover:text-blue-100 transition-colors">{log.displayName}</p>
-                          <p className="text-[10px] text-blue-200 font-bold uppercase tracking-widest">{log.email}</p>
+                          <p className="font-bold text-navy-900 group-hover:text-orange-brown transition-colors">{log.displayName}</p>
+                          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{log.email}</p>
                         </td>
                         <td className="p-8">
-                          <span className="px-3 py-1.5 rounded-xl bg-white/5 text-[9px] font-black uppercase tracking-widest text-blue-100 border border-white/10">
+                          <span className="px-3 py-1.5 rounded-xl bg-slate-100 text-[9px] font-black uppercase tracking-widest text-slate-500 border border-slate-200">
                             {log.classification || 'N/A'}
                           </span>
                         </td>
-                        <td className="p-8 text-xs text-blue-200 font-bold uppercase tracking-widest">{log.college}</td>
+                        <td className="p-8 text-xs text-slate-500 font-bold uppercase tracking-widest">{log.college}</td>
                         <td className="p-8">
-                          <span className="text-[9px] font-black px-4 py-2 rounded-xl bg-white/5 text-white uppercase tracking-[0.2em] border border-white/10">
+                          <span className="text-[9px] font-black px-4 py-2 rounded-xl bg-orange-brown/5 text-orange-brown uppercase tracking-[0.2em] border border-orange-brown/10">
                             {log.reason}
                           </span>
                         </td>
-                        <td className="p-8 pr-10 text-[10px] text-blue-200 font-black uppercase tracking-widest">
+                        <td className="p-8 pr-10 text-[10px] text-slate-400 font-black uppercase tracking-widest">
                           {format(log.timestamp.toDate(), 'MMM d, h:mm a')}
                         </td>
                       </tr>
@@ -349,32 +349,32 @@ export default function AdminDashboard({ profile }: Props) {
             exit={{ opacity: 0, y: -20 }}
             className="space-y-8"
           >
-            <div className="bg-navy-800 p-10 rounded-[40px] shadow-sm border border-white/10">
-              <h3 className="text-xl font-black mb-10 flex items-center gap-4 text-white">
-                <div className="bg-white/5 p-3 rounded-xl text-white border border-white/10">
+            <div className="bg-white p-10 rounded-[40px] shadow-2xl border border-slate-100">
+              <h3 className="text-xl font-black mb-10 flex items-center gap-4 text-navy-900">
+                <div className="bg-slate-50 p-3 rounded-xl text-navy-900 border border-slate-100">
                   <ShieldCheck size={20} />
                 </div>
                 Pending Approvals
               </h3>
               
               {pendingUsers.length === 0 ? (
-                <div className="text-center py-20 text-blue-200 font-black uppercase tracking-widest text-xs italic">
+                <div className="text-center py-20 text-slate-300 font-black uppercase tracking-widest text-xs italic">
                   No pending approval requests.
                 </div>
               ) : (
                 <div className="grid grid-cols-1 gap-6">
                   {pendingUsers.map((u) => (
-                    <div key={u.uid} className="bg-navy-900/50 p-8 rounded-[32px] border border-white/10 flex justify-between items-center group hover:border-orange-brown/50 transition-all">
+                    <div key={u.uid} className="bg-slate-50 p-8 rounded-[32px] border border-slate-100 flex justify-between items-center group hover:border-orange-brown/50 transition-all">
                       <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center text-navy-900 font-black text-3xl shadow-lg">
+                        <div className="w-16 h-16 rounded-2xl bg-navy-900 flex items-center justify-center text-white font-black text-3xl shadow-lg">
                           {u.displayName.charAt(0)}
                         </div>
                         <div>
-                          <h4 className="font-black text-white text-lg">{u.displayName}</h4>
-                          <p className="text-[10px] text-blue-200 font-black uppercase tracking-widest mb-3">{u.email}</p>
+                          <h4 className="font-black text-navy-900 text-lg">{u.displayName}</h4>
+                          <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-3">{u.email}</p>
                           <div className="flex gap-3">
-                            <span className="text-[9px] font-black text-white bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl uppercase tracking-[0.2em]">{u.classification}</span>
-                            <span className="text-[9px] font-black text-blue-200 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl uppercase tracking-[0.2em]">{u.college_office}</span>
+                            <span className="text-[9px] font-black text-slate-500 bg-white border border-slate-200 px-3 py-1.5 rounded-xl uppercase tracking-[0.2em]">{u.classification}</span>
+                            <span className="text-[9px] font-black text-slate-400 bg-white border border-slate-200 px-3 py-1.5 rounded-xl uppercase tracking-[0.2em]">{u.college_office}</span>
                           </div>
                         </div>
                       </div>
@@ -402,33 +402,33 @@ export default function AdminDashboard({ profile }: Props) {
             exit={{ opacity: 0, y: -20 }}
             className="space-y-8"
           >
-            <div className="bg-navy-800 p-3 rounded-2xl shadow-sm border border-white/10 flex items-center gap-5 px-8">
-              <Search size={24} className="text-blue-200" />
+            <div className="bg-white p-3 rounded-2xl shadow-2xl border border-slate-100 flex items-center gap-5 px-8">
+              <Search size={24} className="text-slate-400" />
               <input 
                 type="text" 
                 placeholder="Search by name or email..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-1 bg-transparent border-none outline-none text-sm py-5 font-bold text-white placeholder:text-blue-300"
+                className="flex-1 bg-transparent border-none outline-none text-sm py-5 font-bold text-navy-900 placeholder:text-slate-300"
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {filteredUsers.map((u) => (
-                <div key={u.uid} className="bg-navy-800 p-8 rounded-[40px] shadow-sm border border-white/10 flex justify-between items-center group hover:border-white/30 hover:shadow-lg hover:shadow-white/5 transition-all">
+                <div key={u.uid} className="bg-white p-8 rounded-[40px] shadow-2xl border border-slate-100 flex justify-between items-center group hover:border-orange-brown/30 transition-all">
                   <div className="flex items-center gap-6">
-                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-navy-900 font-black text-3xl shadow-lg ${u.isBlocked ? 'bg-red-400 shadow-red-900/20' : 'bg-white shadow-white/20'}`}>
+                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-black text-3xl shadow-lg ${u.isBlocked ? 'bg-red-500 text-white shadow-red-500/20' : 'bg-navy-900 text-white shadow-navy-900/20'}`}>
                       {u.displayName.charAt(0)}
                     </div>
                     <div>
-                      <h4 className="font-black text-white text-lg flex items-center gap-3">
+                      <h4 className="font-black text-navy-900 text-lg flex items-center gap-3">
                         {u.displayName}
-                        {u.isBlocked && <span className="text-[9px] bg-red-500/10 text-red-400 border border-red-500/20 px-3 py-1 rounded-xl uppercase font-black tracking-[0.2em]">Blocked</span>}
+                        {u.isBlocked && <span className="text-[9px] bg-red-50 text-red-500 border border-red-100 px-3 py-1 rounded-xl uppercase font-black tracking-[0.2em]">Blocked</span>}
                       </h4>
-                      <p className="text-[10px] text-blue-200 font-black uppercase tracking-widest mb-3">{u.email}</p>
+                      <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-3">{u.email}</p>
                       <div className="flex flex-wrap gap-3">
-                        <span className="text-[9px] font-black text-white bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl uppercase tracking-[0.2em]">{u.classification || 'User'}</span>
-                        <span className="text-[9px] font-black text-blue-200 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl uppercase tracking-[0.2em]">{u.college_office || 'No College'}</span>
+                        <span className="text-[9px] font-black text-slate-500 bg-slate-50 border border-slate-100 px-3 py-1.5 rounded-xl uppercase tracking-[0.2em]">{u.classification || 'User'}</span>
+                        <span className="text-[9px] font-black text-slate-400 bg-slate-50 border border-slate-100 px-3 py-1.5 rounded-xl uppercase tracking-[0.2em]">{u.college_office || 'No College'}</span>
                       </div>
                     </div>
                   </div>
@@ -438,8 +438,8 @@ export default function AdminDashboard({ profile }: Props) {
                       onClick={() => handleBlockUser(u.uid, u.isBlocked)}
                       className={`p-5 rounded-2xl transition-all shadow-sm ${
                         u.isBlocked 
-                          ? 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20' 
-                          : 'bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20'
+                          ? 'bg-emerald-50 text-emerald-500 hover:bg-emerald-100 border border-emerald-100' 
+                          : 'bg-red-50 text-red-500 hover:bg-red-100 border border-red-100'
                       }`}
                       title={u.isBlocked ? 'Unblock User' : 'Block User'}
                     >

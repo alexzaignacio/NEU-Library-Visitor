@@ -135,147 +135,174 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-navy-900 text-white font-sans selection:bg-blue-500/30">
+    <div className="min-h-screen bg-white text-navy-900 font-sans selection:bg-orange-brown/30 flex overflow-hidden">
       <Toaster position="top-right" />
       
       {!user ? (
         <Login />
       ) : (
-        <div className="flex flex-col min-h-screen">
-          {/* Blue Navigation Frame */}
-          <header className="sticky top-0 z-50 bg-navy-900 px-4 sm:px-6 lg:px-8 py-4 shadow-lg">
-            <div className="max-w-7xl mx-auto flex justify-between items-center">
-              <div className="flex items-center gap-4">
-                <div className="bg-white p-2.5 rounded-2xl text-navy-900 shadow-xl ring-1 ring-white/10">
-                  <Library size={24} />
+        <>
+          {/* Sidebar */}
+          <aside className="hidden lg:flex w-72 bg-navy-900 flex-col shrink-0 border-r border-white/5">
+            <div className="p-8">
+              <div className="flex items-center gap-4 mb-12">
+                <div className="bg-white p-2 rounded-xl shadow-xl ring-1 ring-white/10">
+                  <img 
+                    src="https://upload.wikimedia.org/wikipedia/en/0/0e/New_Era_University_logo.png" 
+                    alt="NEU Logo" 
+                    className="w-10 h-10 object-contain"
+                    referrerPolicy="no-referrer"
+                  />
                 </div>
-                <div className="hidden xs:block">
-                  <h1 className="text-lg font-black tracking-tight text-white leading-tight">NEU LIBRARY</h1>
-                  <p className="text-[10px] text-blue-100 font-black uppercase tracking-[0.2em]">Institutional Access</p>
+                <div>
+                  <h1 className="text-sm font-black tracking-tight text-white leading-tight">NEU LIBRARY</h1>
+                  <p className="text-[9px] text-blue-200 font-black uppercase tracking-[0.2em]">Visitor Portal</p>
                 </div>
               </div>
-              
-              <div className="flex items-center gap-6">
+
+              <nav className="space-y-2">
+                <button
+                  onClick={() => setViewMode(profile?.role === 'admin' ? 'admin' : (profile?.classification?.toLowerCase() as any || 'student'))}
+                  className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all ${
+                    viewMode !== 'admin' || profile?.role !== 'admin'
+                      ? 'bg-orange-brown text-white shadow-lg shadow-orange-brown/20'
+                      : 'text-blue-200 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <Library size={18} />
+                  Dashboard
+                </button>
+                
                 {profile?.role === 'admin' && (
-                  <div className="flex bg-navy-800/50 p-1 rounded-xl border border-white/10">
-                    {(['admin', 'faculty', 'staff', 'student'] as const).map((mode) => (
-                      <button
-                        key={mode}
-                        onClick={() => setViewMode(mode)}
-                        className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
-                          viewMode === mode 
-                            ? 'bg-white text-navy-900 shadow-lg' 
-                            : 'text-blue-100 hover:text-white hover:bg-white/5'
-                        }`}
-                      >
-                        {mode}
-                      </button>
-                    ))}
-                  </div>
+                  <button
+                    onClick={() => setViewMode('admin')}
+                    className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all ${
+                      viewMode === 'admin'
+                        ? 'bg-orange-brown text-white shadow-lg shadow-orange-brown/20'
+                        : 'text-blue-200 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    <ShieldCheck size={18} />
+                    Admin Panel
+                  </button>
                 )}
+              </nav>
+            </div>
 
-                <div className="flex items-center gap-4 pl-6 border-l border-white/20">
-                  <div className="text-right hidden sm:block">
-                    <p className="text-sm font-bold text-white">{profile?.displayName}</p>
-                    <div className="flex flex-col items-end">
-                      <p className="text-[9px] text-blue-100 font-black uppercase tracking-widest flex items-center justify-end gap-1.5">
-                        {profile?.role === 'admin' ? <ShieldCheck size={10} className="text-white" /> : <User size={10} />}
-                        {profile?.classification || profile?.role}
-                      </p>
-                      <p className="text-[8px] text-blue-200/80 font-medium mt-0.5">
-                        Institutional Email: <span className="text-blue-100 font-bold">{profile?.role === 'admin' ? 'admin' : (profile?.classification?.toLowerCase() || 'student')}</span>
-                      </p>
+            <div className="mt-auto p-8 border-t border-white/5">
+              <button 
+                onClick={handleLogout}
+                className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest text-red-400 hover:bg-red-500/10 transition-all"
+              >
+                <LogOut size={18} />
+                Sign Out
+              </button>
+            </div>
+          </aside>
+
+          {/* Main Content Area */}
+          <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
+            {/* Header */}
+            <header className="bg-navy-900 px-8 py-5 shadow-lg relative z-20 border-b border-white/5">
+              <div className="max-w-full mx-auto flex justify-between items-center">
+                <div className="lg:hidden flex items-center gap-4">
+                  <div className="bg-white p-2 rounded-xl text-navy-900 shadow-xl">
+                    <Library size={20} />
+                  </div>
+                </div>
+
+                <div className="hidden lg:block">
+                  <h2 className="text-blue-100 text-[10px] font-black uppercase tracking-[0.3em]">
+                    {viewMode === 'admin' ? 'Administrative Dashboard' : 'Library Visitor System'}
+                  </h2>
+                </div>
+                
+                <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-4 pl-6 border-l border-white/20">
+                    <div className="text-right">
+                      <p className="text-sm font-black text-white">{profile?.displayName}</p>
+                      <div className="flex flex-col items-end">
+                        <p className="text-[9px] text-blue-200 font-black uppercase tracking-widest flex items-center justify-end gap-1.5">
+                          {profile?.role === 'admin' ? <ShieldCheck size={10} className="text-orange-brown" /> : <User size={10} />}
+                          {profile?.classification || profile?.role}
+                        </p>
+                        <p className="text-[8px] text-blue-300 font-bold mt-0.5">
+                          Institutional Email: <span className="text-blue-100">{profile?.email}</span>
+                        </p>
+                      </div>
+                    </div>
+                    <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white font-black">
+                      {profile?.displayName?.charAt(0)}
                     </div>
                   </div>
-                  <button 
-                    onClick={handleLogout}
-                    className="p-2.5 bg-navy-800 hover:bg-red-500/20 hover:text-red-100 rounded-xl transition-all text-blue-100 border border-white/10"
-                    title="Logout"
-                  >
-                    <LogOut size={18} />
-                  </button>
                 </div>
               </div>
-            </div>
-          </header>
+            </header>
 
-          <main className="flex-1 w-full bg-navy-900">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-              <AnimatePresence mode="wait">
-                {profile?.isBlocked ? (
-                  <motion.div 
-                    key="blocked"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    className="bg-navy-800 p-16 rounded-[40px] shadow-2xl text-center border border-white/10 ring-1 ring-white/5"
-                  >
-                    <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-8 text-red-400">
-                      <ShieldCheck size={48} />
-                    </div>
-                    <h2 className="text-4xl font-black text-white mb-4 tracking-tight">Access Denied</h2>
-                    <p className="text-blue-100 max-w-md mx-auto leading-relaxed">Your account has been restricted from accessing the library portal. Please contact the University Administration for resolution.</p>
-                  </motion.div>
-                ) : (profile?.status === 'pending_approval' && profile?.role !== 'admin') ? (
-                  <motion.div 
-                    key="pending"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    className="bg-navy-800 p-16 rounded-[40px] shadow-2xl text-center border border-white/10 ring-1 ring-white/5"
-                  >
-                    <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-8 text-orange-400">
-                      <ShieldCheck size={48} />
-                    </div>
-                    <h2 className="text-4xl font-black text-white mb-4 tracking-tight">Pending Approval</h2>
-                    <p className="text-blue-100 max-w-md mx-auto leading-relaxed">Your account is currently awaiting administrative approval. Please check back later or contact your department head.</p>
-                    <button 
-                      onClick={handleLogout}
-                      className="mt-8 px-8 py-3 bg-white text-navy-900 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-50 transition-all"
+            {/* Content */}
+            <main className="flex-1 overflow-y-auto bg-[#F8FAFC]">
+              <div className="p-8 lg:p-12">
+                <AnimatePresence mode="wait">
+                  {profile?.isBlocked ? (
+                    <motion.div 
+                      key="blocked"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      className="bg-white p-16 rounded-[40px] shadow-2xl text-center border border-slate-100 max-w-2xl mx-auto mt-10"
                     >
-                      Sign Out
-                    </button>
-                  </motion.div>
-                ) : (viewMode === 'admin' && profile?.role === 'admin') ? (
-                  <motion.div key="admin" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                    <AdminDashboard profile={profile} />
-                  </motion.div>
-                ) : !profile?.college_office || !profile?.classification ? (
-                  <motion.div key="setup" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                    <ProfileSetup profile={profile} onUpdate={(updated) => setProfile(updated)} />
-                  </motion.div>
-                ) : viewMode === 'faculty' ? (
-                  <motion.div key="faculty" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                    <FacultyDashboard profile={profile} />
-                  </motion.div>
-                ) : viewMode === 'staff' ? (
-                  <motion.div key="staff" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                    <StaffDashboard profile={profile} />
-                  </motion.div>
-                ) : (
-                  <motion.div key="student" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                    <VisitorLog profile={profile} />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </main>
-          
-          {/* Blue Footer Frame */}
-          <footer className="bg-navy-900 border-t border-white/10 py-8 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-              <div className="flex items-center gap-3 text-blue-100">
-                <Library size={16} className="text-white" />
-                <span className="text-[10px] font-black uppercase tracking-widest">NEU Library System © 2026</span>
+                      <div className="w-20 h-20 bg-red-50 rounded-3xl flex items-center justify-center mx-auto mb-8 text-red-500 shadow-inner">
+                        <ShieldCheck size={48} />
+                      </div>
+                      <h2 className="text-4xl font-black text-navy-900 mb-4 tracking-tight">Access Denied</h2>
+                      <p className="text-slate-500 max-w-md mx-auto leading-relaxed font-medium">Your account has been restricted from accessing the library portal. Please contact the University Administration for resolution.</p>
+                    </motion.div>
+                  ) : (profile?.status === 'pending_approval' && profile?.role !== 'admin') ? (
+                    <motion.div 
+                      key="pending"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      className="bg-white p-16 rounded-[40px] shadow-2xl text-center border border-slate-100 max-w-2xl mx-auto mt-10"
+                    >
+                      <div className="w-20 h-20 bg-orange-50 rounded-3xl flex items-center justify-center mx-auto mb-8 text-orange-brown shadow-inner">
+                        <ShieldCheck size={48} />
+                      </div>
+                      <h2 className="text-4xl font-black text-navy-900 mb-4 tracking-tight">Pending Approval</h2>
+                      <p className="text-slate-500 max-w-md mx-auto leading-relaxed font-medium">Your account is currently awaiting administrative approval. Please check back later or contact your department head.</p>
+                      <button 
+                        onClick={handleLogout}
+                        className="mt-8 px-10 py-4 bg-navy-900 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-navy-800 transition-all shadow-xl shadow-navy-900/20"
+                      >
+                        Sign Out
+                      </button>
+                    </motion.div>
+                  ) : (viewMode === 'admin' && profile?.role === 'admin') ? (
+                    <motion.div key="admin" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                      <AdminDashboard profile={profile} />
+                    </motion.div>
+                  ) : !profile?.college_office || !profile?.classification ? (
+                    <motion.div key="setup" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                      <ProfileSetup profile={profile} onUpdate={(updated) => setProfile(updated)} />
+                    </motion.div>
+                  ) : viewMode === 'faculty' ? (
+                    <motion.div key="faculty" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                      <FacultyDashboard profile={profile} />
+                    </motion.div>
+                  ) : viewMode === 'staff' ? (
+                    <motion.div key="staff" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                      <StaffDashboard profile={profile} />
+                    </motion.div>
+                  ) : (
+                    <motion.div key="student" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                      <VisitorLog profile={profile} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-              <div className="flex gap-8 text-[10px] font-black uppercase tracking-widest text-blue-200">
-                <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-                <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-                <a href="#" className="hover:text-white transition-colors">Support</a>
-              </div>
-            </div>
-          </footer>
-        </div>
+            </main>
+          </div>
+        </>
       )}
     </div>
   );

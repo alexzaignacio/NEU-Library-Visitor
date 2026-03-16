@@ -8,7 +8,7 @@
         "uid": { "type": "string", "description": "Firebase Auth UID" },
         "email": { "type": "string", "format": "email", "description": "Institutional email" },
         "displayName": { "type": "string", "description": "Full name" },
-        "role": { "type": "string", "enum": ["admin", "user"], "description": "User role" },
+        "role": { "type": "string", "enum": ["admin", "student", "faculty", "staff"], "description": "User role" },
         "college_office": { "type": "string", "description": "College or Office the user belongs to" },
         "isBlocked": { "type": "boolean", "description": "Whether the user is blocked from entering" },
         "lastLogin": { "type": "string", "format": "date-time", "description": "Last login timestamp" },

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { auth, db, onAuthStateChanged, doc, getDoc, setDoc, Timestamp, updateDoc } from './firebase';
+import { auth, db, onAuthStateChanged, doc, getDoc, setDoc, Timestamp, updateDoc, getRedirectResult } from './firebase';
 import { UserProfile } from './types';
 import Login from './components/Login';
 import ProfileSetup from './components/ProfileSetup';
@@ -18,11 +18,27 @@ export default function App() {
   const [viewMode, setViewMode] = useState<'admin' | 'faculty' | 'student' | 'staff'>('admin');
 
   useEffect(() => {
+    // Handle redirect result for mobile auth
+    const handleRedirect = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result) {
+          toast.success('Successfully signed in!');
+        }
+      } catch (error: any) {
+        if (error.code !== 'auth/no-current-user') {
+          console.error("Redirect Auth Error:", error);
+          toast.error(`Auth Error: ${error.message}`);
+        }
+      }
+    };
+    handleRedirect();
+
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setLoading(true);
       if (firebaseUser) {
         const email = firebaseUser.email;
-        const isSuperAdmin = email === 'alexzagayle.ignacio@neu.edu.ph';
+        const isSuperAdmin = email === 'alexzagayle.ignacio@neu.edu.ph' || email === 'jcesperanza@neu.edu.ph';
 
         if (email && !email.endsWith('@neu.edu.ph') && !isSuperAdmin) {
           await auth.signOut();
@@ -157,10 +173,15 @@ export default function App() {
                 <div className="flex items-center gap-4 pl-6 border-l border-white/20">
                   <div className="text-right hidden sm:block">
                     <p className="text-sm font-bold text-white">{profile?.displayName}</p>
-                    <p className="text-[9px] text-blue-100 font-black uppercase tracking-widest flex items-center justify-end gap-1.5">
-                      {profile?.role === 'admin' ? <ShieldCheck size={10} className="text-white" /> : <User size={10} />}
-                      {profile?.classification || profile?.role}
-                    </p>
+                    <div className="flex flex-col items-end">
+                      <p className="text-[9px] text-blue-100 font-black uppercase tracking-widest flex items-center justify-end gap-1.5">
+                        {profile?.role === 'admin' ? <ShieldCheck size={10} className="text-white" /> : <User size={10} />}
+                        {profile?.classification || profile?.role}
+                      </p>
+                      <p className="text-[8px] text-blue-200/80 font-medium mt-0.5">
+                        Institutional Email: <span className="text-blue-100 font-bold">{profile?.role === 'admin' ? 'admin' : (profile?.classification?.toLowerCase() || 'student')}</span>
+                      </p>
+                    </div>
                   </div>
                   <button 
                     onClick={handleLogout}

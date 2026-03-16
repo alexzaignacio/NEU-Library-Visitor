@@ -1,4 +1,4 @@
-export type UserRole = 'admin' | 'user';
+export type UserRole = 'admin' | 'student' | 'faculty' | 'staff';
 export type UserClassification = 'Student' | 'Faculty' | 'Staff' | 'Admin';
 
 export interface UserProfile {

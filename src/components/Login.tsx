@@ -15,17 +15,24 @@ export default function Login() {
   const handleGoogleLogin = async () => {
     try {
       const result = await signInWithGoogle();
-      const userEmail = result.user.email;
       
-      if (userEmail && !userEmail.endsWith('@neu.edu.ph') && userEmail !== 'alexzagayle.ignacio@neu.edu.ph') {
-        await auth.signOut();
-        toast.error('Please use your @neu.edu.ph institutional email.');
-        return;
+      // If it's a popup, we get a result. If it's a redirect, the page will reload.
+      if (result) {
+        const userEmail = result.user.email;
+        const isSuperAdmin = userEmail === 'alexzagayle.ignacio@neu.edu.ph' || userEmail === 'jcesperanza@neu.edu.ph';
+        
+        if (userEmail && !userEmail.endsWith('@neu.edu.ph') && !isSuperAdmin) {
+          await auth.signOut();
+          toast.error('Please use your @neu.edu.ph institutional email.');
+          return;
+        }
+        
+        toast.success('Welcome back!');
       }
-      
-      toast.success('Welcome back!');
     } catch (error: any) {
-      toast.error(`Sign-in failed: ${error.message || 'Unknown error'}`);
+      if (error.code !== 'auth/no-current-user') {
+        toast.error(`Sign-in failed: ${error.message || 'Unknown error'}`);
+      }
     }
   };
 
@@ -36,7 +43,8 @@ export default function Login() {
       return;
     }
 
-    if (!email.endsWith('@neu.edu.ph') && email !== 'alexzagayle.ignacio@neu.edu.ph') {
+    const isSuperAdmin = email === 'alexzagayle.ignacio@neu.edu.ph' || email === 'jcesperanza@neu.edu.ph';
+    if (!email.endsWith('@neu.edu.ph') && !isSuperAdmin) {
       toast.error('Please use an @neu.edu.ph email address.');
       return;
     }

@@ -40,6 +40,63 @@
     "/logs/{logId}": {
       "schema": "VisitLog",
       "description": "Library visit logs"
+    },
+    "/reservations/{reservationId}": {
+      "schema": {
+        "title": "Reservation",
+        "type": "object",
+        "properties": {
+          "userUid": { "type": "string" },
+          "room": { "type": "string" },
+          "date": { "type": "string", "format": "date-time" },
+          "status": { "type": "string", "enum": ["pending", "approved", "rejected"] }
+        },
+        "required": ["userUid", "room", "date", "status"]
+      },
+      "description": "Room reservations"
+    },
+    "/resource_requests/{requestId}": {
+      "schema": {
+        "title": "Resource Request",
+        "type": "object",
+        "properties": {
+          "userUid": { "type": "string" },
+          "title": { "type": "string" },
+          "justification": { "type": "string" },
+          "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+          "timestamp": { "type": "string", "format": "date-time" }
+        },
+        "required": ["userUid", "title", "justification", "status", "timestamp"]
+      },
+      "description": "Faculty resource requests"
+    },
+    "/inventory/{itemId}": {
+      "schema": {
+        "title": "Inventory Item",
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "sku": { "type": "string" },
+          "stock": { "type": "number" },
+          "status": { "type": "string" }
+        },
+        "required": ["name", "sku", "stock", "status"]
+      },
+      "description": "Library inventory"
+    },
+    "/facility_requests/{requestId}": {
+      "schema": {
+        "title": "Facility Request",
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "priority": { "type": "string" },
+          "status": { "type": "string", "enum": ["pending", "completed"] },
+          "timestamp": { "type": "string", "format": "date-time" }
+        },
+        "required": ["title", "priority", "status", "timestamp"]
+      },
+      "description": "Staff facility maintenance requests"
     }
   }
 }

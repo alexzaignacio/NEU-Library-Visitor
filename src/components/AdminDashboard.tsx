@@ -14,7 +14,9 @@ import {
   ArrowRight,
   TrendingUp,
   Clock,
-  ShieldCheck
+  ShieldCheck,
+  Shield,
+  BookOpen
 } from 'lucide-react';
 import { format, startOfDay, endOfDay, startOfWeek, startOfMonth, subDays, isWithinInterval } from 'date-fns';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
@@ -24,14 +26,15 @@ interface Props {
   profile: UserProfile;
 }
 
-type Tab = 'stats' | 'logs' | 'users' | 'approvals';
+type Tab = 'stats' | 'logs' | 'users' | 'approvals' | 'simulation';
 
 export default function AdminDashboard({ profile }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>('stats');
   const [logs, setLogs] = useState<VisitLog[]>([]);
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [dateRange, setDateRange] = useState<'today' | 'weekly' | 'monthly' | 'custom'>('today');
+  const [dateRange, setDateRange] = useState<'today' | 'weekly' | 'monthly' | 'all' | 'custom'>('today');
+  const [simulatedRole, setSimulatedRole] = useState<'admin' | 'faculty' | 'student' | 'staff'>('admin');
   const [customStart, setCustomStart] = useState(format(subDays(new Date(), 7), 'yyyy-MM-dd'));
   const [customEnd, setCustomEnd] = useState(format(new Date(), 'yyyy-MM-dd'));
 
@@ -55,6 +58,8 @@ export default function AdminDashboard({ profile }: Props) {
   }, []);
 
   const filteredLogs = useMemo(() => {
+    if (dateRange === 'all') return logs;
+
     let start = startOfDay(new Date());
     let end = endOfDay(new Date());
 
@@ -66,8 +71,13 @@ export default function AdminDashboard({ profile }: Props) {
     }
 
     return logs.filter(log => {
-      const date = log.timestamp.toDate();
-      return isWithinInterval(date, { start, end });
+      if (!log.timestamp) return false;
+      try {
+        const date = log.timestamp.toDate();
+        return isWithinInterval(date, { start, end });
+      } catch (e) {
+        return false;
+      }
     });
   }, [logs, dateRange, customStart, customEnd]);
 
@@ -79,8 +89,25 @@ export default function AdminDashboard({ profile }: Props) {
       studying: 0
     };
     filteredLogs.forEach(log => {
-      if (counts[log.reason] !== undefined) {
-        counts[log.reason]++;
+      if (log.reason && counts[log.reason.toLowerCase()] !== undefined) {
+        counts[log.reason.toLowerCase()]++;
+      }
+    });
+    return Object.entries(counts).map(([name, value]) => ({ 
+      name: name.charAt(0).toUpperCase() + name.slice(1), 
+      value 
+    }));
+  }, [filteredLogs]);
+
+  const classificationData = useMemo(() => {
+    const counts: Record<string, number> = {
+      student: 0,
+      faculty: 0,
+      staff: 0
+    };
+    filteredLogs.forEach(log => {
+      if (log.classification && counts[log.classification.toLowerCase()] !== undefined) {
+        counts[log.classification.toLowerCase()]++;
       }
     });
     return Object.entries(counts).map(([name, value]) => ({ 
@@ -125,7 +152,7 @@ export default function AdminDashboard({ profile }: Props) {
     <div className="space-y-10">
       {/* Navigation Tabs */}
       <div className="flex gap-2 bg-white p-2 rounded-2xl shadow-2xl border border-navy-900/10 w-fit mx-auto">
-        {(['stats', 'logs', 'users', 'approvals'] as Tab[]).map((tab) => (
+        {(['stats', 'logs', 'users', 'approvals', 'simulation'] as Tab[]).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -135,7 +162,7 @@ export default function AdminDashboard({ profile }: Props) {
                 : 'text-slate-400 hover:text-navy-900 hover:bg-slate-50'
             }`}
           >
-            {tab}
+            {tab === 'stats' ? 'Analytics' : tab === 'simulation' ? 'POV POV' : tab}
             {tab === 'approvals' && pendingUsers.length > 0 && (
               <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center border-2 border-white">
                 {pendingUsers.length}
@@ -163,7 +190,7 @@ export default function AdminDashboard({ profile }: Props) {
                 <span className="font-black uppercase tracking-[0.2em] text-[11px] text-navy-900">Analytics Filter</span>
               </div>
               <div className="flex flex-wrap gap-3">
-                {(['today', 'weekly', 'monthly', 'custom'] as const).map((r) => (
+                {(['today', 'weekly', 'monthly', 'all', 'custom'] as const).map((r) => (
                   <button
                     key={r}
                     onClick={() => setDateRange(r)}
@@ -245,32 +272,70 @@ export default function AdminDashboard({ profile }: Props) {
               </div>
             </div>
 
-            {/* Chart */}
-            <div className="bg-white p-10 rounded-[40px] shadow-2xl border border-navy-900/10">
-              <h3 className="text-xl font-black mb-10 flex items-center gap-4 text-navy-900">
-                <div className="bg-navy-900 p-3 rounded-xl text-white shadow-lg">
-                  <BarChart3 size={20} />
+            {/* Charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="bg-white p-10 rounded-[40px] shadow-2xl border border-navy-900/10">
+                <h3 className="text-xl font-black mb-10 flex items-center gap-4 text-navy-900">
+                  <div className="bg-navy-900 p-3 rounded-xl text-white shadow-lg">
+                    <BarChart3 size={20} />
+                  </div>
+                  Visit Reasons
+                </h3>
+                <div className="h-[350px] w-full">
+                  {filteredLogs.length > 0 ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={statsData}>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                        <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 900 }} />
+                        <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 900 }} />
+                        <Tooltip 
+                          cursor={{ fill: 'rgba(59, 130, 246, 0.05)' }}
+                          contentStyle={{ backgroundColor: '#fff', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', padding: '16px' }}
+                          itemStyle={{ color: '#1e293b', fontSize: '12px', fontWeight: 'bold' }}
+                        />
+                        <Bar dataKey="value" radius={[12, 12, 0, 0]} barSize={48}>
+                          {statsData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="h-full flex items-center justify-center text-slate-300 font-black uppercase tracking-widest text-xs italic">No data available</div>
+                  )}
                 </div>
-                Visitor Distribution
-              </h3>
-              <div className="h-[350px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={statsData}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 900 }} />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 900 }} />
-                    <Tooltip 
-                      cursor={{ fill: 'rgba(59, 130, 246, 0.05)' }}
-                      contentStyle={{ backgroundColor: '#fff', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', padding: '16px' }}
-                      itemStyle={{ color: '#1e293b', fontSize: '12px', fontWeight: 'bold' }}
-                    />
-                    <Bar dataKey="value" radius={[12, 12, 0, 0]} barSize={48}>
-                      {statsData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
+              </div>
+
+              <div className="bg-white p-10 rounded-[40px] shadow-2xl border border-navy-900/10">
+                <h3 className="text-xl font-black mb-10 flex items-center gap-4 text-navy-900">
+                  <div className="bg-orange-brown p-3 rounded-xl text-white shadow-lg shadow-orange-brown/20">
+                    <Users size={20} />
+                  </div>
+                  Visitor Distribution
+                </h3>
+                <div className="h-[350px] w-full">
+                  {filteredLogs.length > 0 ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={classificationData}>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                        <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 900 }} />
+                        <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 900 }} />
+                        <Tooltip 
+                          cursor={{ fill: 'rgba(245, 158, 11, 0.05)' }}
+                          contentStyle={{ backgroundColor: '#fff', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', padding: '16px' }}
+                          itemStyle={{ color: '#1e293b', fontSize: '12px', fontWeight: 'bold' }}
+                        />
+                        <Bar dataKey="value" radius={[12, 12, 0, 0]} barSize={48}>
+                          {classificationData.map((entry, index) => (
+                            <Cell key={`cell-class-${index}`} fill={COLORS[(index + 2) % COLORS.length]} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="h-full flex items-center justify-center text-slate-300 font-black uppercase tracking-widest text-xs italic">No data available</div>
+                  )}
+                </div>
               </div>
             </div>
           </motion.div>
@@ -448,6 +513,69 @@ export default function AdminDashboard({ profile }: Props) {
                   )}
                 </div>
               ))}
+            </div>
+          </motion.div>
+        )}
+        {activeTab === 'simulation' && (
+          <motion.div 
+            key="simulation"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="space-y-8"
+          >
+            <div className="bg-white p-10 rounded-[40px] border border-navy-900/5 shadow-sm max-w-2xl">
+              <h3 className="text-2xl font-black text-navy-900 mb-4">Admin POV Simulation</h3>
+              <p className="text-navy-900/60 mb-8 font-medium">Select a role to view the system from their perspective. This allows you to verify the user interface and functionality for different user types.</p>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                {(['student', 'staff', 'faculty'] as const).map((role) => (
+                  <button
+                    key={role}
+                    onClick={() => setSimulatedRole(role)}
+                    className={`p-6 rounded-3xl border-2 transition-all text-left flex items-center gap-4 ${
+                      simulatedRole === role 
+                        ? 'border-orange-600 bg-orange-50' 
+                        : 'border-navy-900/5 hover:border-navy-900/20'
+                    }`}
+                  >
+                    <div className={`p-3 rounded-xl ${
+                      simulatedRole === role ? 'bg-orange-600 text-white' : 'bg-navy-900/5 text-navy-900'
+                    }`}>
+                      {role === 'student' && <Users size={20} />}
+                      {role === 'staff' && <Shield size={20} />}
+                      {role === 'faculty' && <BookOpen size={20} />}
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-navy-900/40">Simulate</p>
+                      <p className="font-black text-navy-900 capitalize">{role}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex gap-4">
+                <button
+                  onClick={() => {
+                    // This will be handled in App.tsx by listening to a custom event or using a shared state
+                    window.dispatchEvent(new CustomEvent('simulate-role', { detail: simulatedRole }));
+                    toast.success(`Simulating ${simulatedRole} perspective`);
+                  }}
+                  className="flex-1 py-4 bg-orange-600 hover:bg-orange-700 text-white rounded-2xl font-black uppercase tracking-widest text-[12px] transition-all shadow-lg shadow-orange-600/20"
+                >
+                  Launch Simulation
+                </button>
+                <button
+                  onClick={() => {
+                    window.dispatchEvent(new CustomEvent('simulate-role', { detail: 'admin' }));
+                    setSimulatedRole('admin');
+                    toast.success('Returned to Admin view');
+                  }}
+                  className="px-8 py-4 bg-navy-900 hover:bg-navy-800 text-white rounded-2xl font-black uppercase tracking-widest text-[12px] transition-all"
+                >
+                  Reset
+                </button>
+              </div>
             </div>
           </motion.div>
         )}

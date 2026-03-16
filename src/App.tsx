@@ -16,6 +16,20 @@ export default function App() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'admin' | 'faculty' | 'student' | 'staff'>('admin');
+  const [isSimulating, setIsSimulating] = useState(false);
+
+  useEffect(() => {
+    const handleSimulation = (e: any) => {
+      const role = e.detail;
+      if (profile?.role === 'admin') {
+        setViewMode(role);
+        setIsSimulating(role !== 'admin');
+      }
+    };
+
+    window.addEventListener('simulate-role', handleSimulation);
+    return () => window.removeEventListener('simulate-role', handleSimulation);
+  }, [profile]);
 
   useEffect(() => {
     // Handle redirect result for mobile auth
@@ -211,10 +225,23 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="hidden lg:block">
+                <div className="hidden lg:flex items-center gap-4">
                   <h2 className="text-blue-100 text-[10px] font-black uppercase tracking-[0.3em]">
-                    {viewMode === 'admin' ? 'Administrative Dashboard' : 'Library Visitor System'}
+                    {viewMode === 'admin' ? 'Administrative Dashboard' : 
+                     isSimulating ? `POV Simulation: ${viewMode.toUpperCase()}` :
+                     'Library Visitor System'}
                   </h2>
+                  {isSimulating && (
+                    <button 
+                      onClick={() => {
+                        setViewMode('admin');
+                        setIsSimulating(false);
+                      }}
+                      className="px-3 py-1 bg-orange-brown text-white text-[9px] font-black uppercase tracking-widest rounded-lg shadow-lg shadow-orange-brown/20"
+                    >
+                      Exit POV
+                    </button>
+                  )}
                 </div>
                 
                 <div className="flex items-center gap-6">

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { UserProfile } from '../types';
+import { db, collection, addDoc, Timestamp, onSnapshot, query, orderBy, updateDoc, doc } from '../firebase';
 import { 
   Package, 
   ClipboardList, 
@@ -18,6 +19,7 @@ import {
   Eye
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { format } from 'date-fns';
 
 interface Props {
   profile: UserProfile;
@@ -62,6 +64,54 @@ const STAFF_TASKS = [
 
 export default function StaffDashboard({ profile }: Props) {
   const [activeModule, setActiveModule] = useState<StaffModule>('main');
+  const [inventory, setInventory] = useState<any[]>([]);
+  const [facilityRequests, setFacilityRequests] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const invQuery = query(collection(db, 'inventory'), orderBy('name'));
+    const unsubscribeInv = onSnapshot(invQuery, (snapshot) => {
+      setInventory(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    });
+
+    const facQuery = query(collection(db, 'facility_requests'), orderBy('timestamp', 'desc'));
+    const unsubscribeFac = onSnapshot(facQuery, (snapshot) => {
+      setFacilityRequests(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    });
+
+    return () => {
+      unsubscribeInv();
+      unsubscribeFac();
+    };
+  }, []);
+
+  const handleAddInventory = async () => {
+    try {
+      setLoading(true);
+      await addDoc(collection(db, 'inventory'), {
+        name: 'New Resource',
+        sku: `SKU-${Math.floor(Math.random() * 1000)}`,
+        stock: 10,
+        status: 'Available'
+      });
+      toast.success('Inventory item added');
+    } catch (error) {
+      toast.error('Failed to add item');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCompleteFacilityRequest = async (id: string) => {
+    try {
+      await updateDoc(doc(db, 'facility_requests', id), {
+        status: 'completed'
+      });
+      toast.success('Request marked as complete');
+    } catch (error) {
+      toast.error('Failed to update request');
+    }
+  };
 
   const renderModule = () => {
     switch (activeModule) {
@@ -81,40 +131,46 @@ export default function StaffDashboard({ profile }: Props) {
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-200" size={18} />
                   <input type="text" placeholder="Search inventory by SKU or Title..." className="w-full bg-navy-900 border border-white/10 rounded-xl pl-12 pr-5 py-4 text-sm font-bold text-white outline-none focus:ring-2 focus:ring-white/20" />
                 </div>
-                <button onClick={() => toast.success('Opening add item dialog...')} className="px-6 bg-white hover:bg-blue-50 text-navy-900 rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center gap-2 transition-all shadow-lg">
-                  <Plus size={16} /> Add Item
+                <button 
+                  onClick={handleAddInventory} 
+                  disabled={loading}
+                  className="px-6 bg-white hover:bg-blue-50 text-navy-900 rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center gap-2 transition-all shadow-lg disabled:opacity-50"
+                >
+                  <Plus size={16} /> {loading ? 'Adding...' : 'Add Item'}
                 </button>
               </div>
 
               <div className="space-y-4">
-                {[
-                  { name: 'MacBook Pro M2 (Lab 1)', sku: 'HW-001', stock: 12, status: 'In Use' },
-                  { name: 'Advanced Calculus 10th Ed', sku: 'BK-442', stock: 45, status: 'Available' },
-                  { name: 'Digital Projector X5', sku: 'HW-089', stock: 2, status: 'Maintenance' }
-                ].map((item) => (
-                  <div key={item.sku} className="p-6 bg-navy-900 rounded-2xl border border-white/10 flex items-center justify-between group hover:bg-white/5 hover:border-white/20 transition-all">
-                    <div className="flex items-center gap-5">
-                      <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center text-white border border-white/10">
-                        <Package size={24} />
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-white">{item.name}</h4>
-                        <p className="text-[10px] text-blue-200 font-black uppercase tracking-widest">SKU: {item.sku} • Stock: {item.stock}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${
-                        item.status === 'Available' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 
-                        item.status === 'In Use' ? 'bg-white/10 text-white border border-white/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-                      }`}>
-                        {item.status}
-                      </span>
-                      <button className="p-2 text-blue-300 hover:text-white transition-colors">
-                        <ArrowRight size={18} />
-                      </button>
-                    </div>
+                {inventory.length === 0 ? (
+                  <div className="p-12 text-center text-blue-200 font-black uppercase tracking-widest text-[10px] bg-navy-900 rounded-2xl border border-white/5">
+                    No inventory items found. Click "Add Item" to begin.
                   </div>
-                ))}
+                ) : (
+                  inventory.map((item) => (
+                    <div key={item.id} className="p-6 bg-navy-900 rounded-2xl border border-white/10 flex items-center justify-between group hover:bg-white/5 hover:border-white/20 transition-all">
+                      <div className="flex items-center gap-5">
+                        <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center text-white border border-white/10">
+                          <Package size={24} />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-white">{item.name}</h4>
+                          <p className="text-[10px] text-blue-200 font-black uppercase tracking-widest">SKU: {item.sku} • Stock: {item.stock}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${
+                          item.status === 'Available' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 
+                          item.status === 'In Use' ? 'bg-white/10 text-white border border-white/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                        }`}>
+                          {item.status}
+                        </span>
+                        <button className="p-2 text-blue-300 hover:text-white transition-colors">
+                          <ArrowRight size={18} />
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </motion.div>
@@ -131,34 +187,45 @@ export default function StaffDashboard({ profile }: Props) {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[
-                { title: 'AC Repair - 2nd Floor', priority: 'High', date: 'Today', icon: AlertCircle },
-                { title: 'General Cleaning - Study Hall', priority: 'Medium', date: 'Tomorrow', icon: ClipboardList },
-                { title: 'Light Replacement - Lab 3', priority: 'Low', date: 'Mar 18', icon: Settings }
-              ].map((req) => (
-                <div key={req.title} className="bg-navy-800 p-8 rounded-[32px] border border-white/10 shadow-sm space-y-6">
-                  <div className="flex justify-between items-start">
-                    <div className={`w-12 h-12 ${req.priority === 'High' ? 'bg-rose-500/10 text-rose-400' : 'bg-white/5 text-white'} rounded-xl flex items-center justify-center border border-white/10`}>
-                      <req.icon size={24} />
-                    </div>
-                    <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${
-                      req.priority === 'High' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : 'bg-white/10 text-white border border-white/20'
-                    }`}>
-                      {req.priority} Priority
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-bold text-white">{req.title}</h3>
-                  <p className="text-blue-100 text-sm">Scheduled for: {req.date}</p>
-                  <div className="flex gap-3">
-                    <button onClick={() => toast.success('Request marked as complete')} className="flex-1 py-3 bg-white hover:bg-blue-50 text-navy-900 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all shadow-lg">
-                      Complete
-                    </button>
-                    <button onClick={() => toast.success('Opening details...')} className="px-5 py-3 bg-navy-900 hover:bg-white/5 text-blue-200 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all border border-white/10">
-                      Details
-                    </button>
-                  </div>
+              {facilityRequests.length === 0 ? (
+                <div className="col-span-full p-12 text-center text-blue-200 font-black uppercase tracking-widest text-[10px] bg-navy-800 rounded-[40px] border border-white/5">
+                  No facility requests found.
                 </div>
-              ))}
+              ) : (
+                facilityRequests.map((req) => (
+                  <div key={req.id} className="bg-navy-800 p-8 rounded-[32px] border border-white/10 shadow-sm space-y-6">
+                    <div className="flex justify-between items-start">
+                      <div className={`w-12 h-12 ${req.priority === 'High' ? 'bg-rose-500/10 text-rose-400' : 'bg-white/5 text-white'} rounded-xl flex items-center justify-center border border-white/10`}>
+                        <AlertCircle size={24} />
+                      </div>
+                      <div className="flex flex-col items-end gap-2">
+                        <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${
+                          req.priority === 'High' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : 'bg-white/10 text-white border border-white/20'
+                        }`}>
+                          {req.priority} Priority
+                        </span>
+                        <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest ${
+                          req.status === 'completed' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'
+                        }`}>
+                          {req.status}
+                        </span>
+                      </div>
+                    </div>
+                    <h3 className="text-lg font-bold text-white">{req.title}</h3>
+                    <p className="text-blue-100 text-sm">Requested: {format(req.timestamp.toDate(), 'MMM d, h:mm a')}</p>
+                    <div className="flex gap-3">
+                      {req.status !== 'completed' && (
+                        <button onClick={() => handleCompleteFacilityRequest(req.id)} className="flex-1 py-3 bg-white hover:bg-blue-50 text-navy-900 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all shadow-lg">
+                          Complete
+                        </button>
+                      )}
+                      <button onClick={() => toast.success('Opening details...')} className="px-5 py-3 bg-navy-900 hover:bg-white/5 text-blue-200 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all border border-white/10">
+                        Details
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </motion.div>
         );

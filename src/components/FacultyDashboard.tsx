@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { UserProfile } from '../types';
+import { db, collection, addDoc, Timestamp } from '../firebase';
 import { 
   BookOpen, 
   Calendar, 
@@ -88,13 +89,27 @@ export default function FacultyDashboard({ profile }: Props) {
                   <h3 className="text-lg font-bold text-white">{room}</h3>
                   <p className="text-blue-100 text-sm">Available for booking today from 1 PM to 5 PM.</p>
                   <button 
-                    onClick={() => {
-                      toast.success(`Reservation request sent for ${room}`);
-                      setActiveModule('main');
+                    onClick={async () => {
+                      try {
+                        setLoading(true);
+                        await addDoc(collection(db, 'reservations'), {
+                          userUid: profile.uid,
+                          room,
+                          date: Timestamp.now(),
+                          status: 'pending'
+                        });
+                        toast.success(`Reservation request sent for ${room}`);
+                        setActiveModule('main');
+                      } catch (error) {
+                        toast.error('Failed to send reservation request');
+                      } finally {
+                        setLoading(false);
+                      }
                     }}
-                    className="w-full py-3 bg-white hover:bg-blue-50 text-navy-900 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all shadow-lg"
+                    disabled={loading}
+                    className="w-full py-3 bg-white hover:bg-blue-50 text-navy-900 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all shadow-lg disabled:opacity-50"
                   >
-                    Book Now
+                    {loading ? 'Processing...' : 'Book Now'}
                   </button>
                 </div>
               ))}
@@ -113,21 +128,40 @@ export default function FacultyDashboard({ profile }: Props) {
             </div>
             
             <div className="bg-navy-800 p-10 rounded-[40px] border border-white/10 shadow-sm max-w-2xl">
-              <form onSubmit={(e) => {
+              <form onSubmit={async (e) => {
                 e.preventDefault();
-                toast.success('Resource request submitted to acquisition team.');
-                setActiveModule('main');
+                const formData = new FormData(e.currentTarget);
+                const title = formData.get('title') as string;
+                const justification = formData.get('justification') as string;
+
+                try {
+                  setLoading(true);
+                  await addDoc(collection(db, 'resource_requests'), {
+                    userUid: profile.uid,
+                    title,
+                    justification,
+                    status: 'pending',
+                    timestamp: Timestamp.now()
+                  });
+                  toast.success('Resource request submitted to acquisition team.');
+                  setActiveModule('main');
+                } catch (error) {
+                  toast.error('Failed to submit request');
+                } finally {
+                  setLoading(false);
+                }
               }} className="space-y-6">
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-blue-200 ml-1">Resource Title</label>
-                  <input type="text" required placeholder="Enter book or journal title..." className="w-full bg-navy-900 border border-white/10 rounded-xl px-5 py-4 text-sm font-bold text-white outline-none focus:ring-2 focus:ring-white/20" />
+                  <input name="title" type="text" required placeholder="Enter book or journal title..." className="w-full bg-navy-900 border border-white/10 rounded-xl px-5 py-4 text-sm font-bold text-white outline-none focus:ring-2 focus:ring-white/20" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-blue-200 ml-1">Justification</label>
-                  <textarea required placeholder="Briefly explain the academic need..." className="w-full bg-navy-900 border border-white/10 rounded-xl px-5 py-4 text-sm font-bold text-white outline-none focus:ring-2 focus:ring-white/20 h-32" />
+                  <textarea name="justification" required placeholder="Briefly explain the academic need..." className="w-full bg-navy-900 border border-white/10 rounded-xl px-5 py-4 text-sm font-bold text-white outline-none focus:ring-2 focus:ring-white/20 h-32" />
                 </div>
-                <button type="submit" className="w-full py-4 bg-white hover:bg-blue-50 text-navy-900 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all shadow-lg flex items-center justify-center gap-2">
-                  <Send size={16} /> Submit Request
+                <button type="submit" disabled={loading} className="w-full py-4 bg-white hover:bg-blue-50 text-navy-900 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50">
+                  {loading ? <Clock className="animate-spin" size={16} /> : <Send size={16} />} 
+                  {loading ? 'Submitting...' : 'Submit Request'}
                 </button>
               </form>
             </div>

@@ -46,8 +46,16 @@ service cloud.firestore {
     function isAdmin() {
       return isAuthenticated() && (
         (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin') ||
-        (request.auth.token.email == "jcesperanza@neu.edu.ph" && request.auth.token.email_verified == true)
+        (request.auth.token.email == "alexzagayle.ignacio@neu.edu.ph" && request.auth.token.email_verified == true)
       );
+    }
+
+    function isStaff() {
+      return isAuthenticated() && (isAdmin() || (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'staff'));
+    }
+
+    function isFaculty() {
+      return isAuthenticated() && (isAdmin() || (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'faculty'));
     }
 
     function isApproved() {
@@ -78,6 +86,39 @@ service cloud.firestore {
              data.timestamp is timestamp;
     }
 
+    function isValidReservation(data) {
+      return data.keys().hasAll(['userUid', 'room', 'date', 'status']) &&
+             data.userUid == request.auth.uid &&
+             data.room is string &&
+             data.date is timestamp &&
+             data.status in ['pending', 'approved', 'rejected'];
+    }
+
+    function isValidResourceRequest(data) {
+      return data.keys().hasAll(['userUid', 'title', 'justification', 'status', 'timestamp']) &&
+             data.userUid == request.auth.uid &&
+             data.title is string &&
+             data.justification is string &&
+             data.status in ['pending', 'approved', 'rejected'] &&
+             data.timestamp is timestamp;
+    }
+
+    function isValidInventoryItem(data) {
+      return data.keys().hasAll(['name', 'sku', 'stock', 'status']) &&
+             data.name is string &&
+             data.sku is string &&
+             data.stock is number &&
+             data.status is string;
+    }
+
+    function isValidFacilityRequest(data) {
+      return data.keys().hasAll(['title', 'priority', 'status', 'timestamp']) &&
+             data.title is string &&
+             data.priority in ['High', 'Medium', 'Low'] &&
+             data.status in ['pending', 'completed'] &&
+             data.timestamp is timestamp;
+    }
+
     // ===============================================================
     // Rules
     // ===============================================================
@@ -97,6 +138,29 @@ service cloud.firestore {
       allow read: if isAdmin();
       allow create: if isAuthenticated() && isApproved() && isNotBlocked() && isValidLog(request.resource.data);
       allow list: if isAdmin();
+    }
+
+    match /reservations/{resId} {
+      allow read: if isOwner(resource.data.userUid) || isAdmin();
+      allow create: if isAuthenticated() && isApproved() && isValidReservation(request.resource.data);
+      allow update: if isAdmin();
+    }
+
+    match /resource_requests/{reqId} {
+      allow read: if isOwner(resource.data.userUid) || isAdmin();
+      allow create: if isFaculty() && isApproved() && isValidResourceRequest(request.resource.data);
+      allow update: if isAdmin();
+    }
+
+    match /inventory/{itemId} {
+      allow read: if isAuthenticated();
+      allow write: if isStaff() || isAdmin();
+    }
+
+    match /facility_requests/{reqId} {
+      allow read: if isStaff() || isAdmin();
+      allow create: if isStaff() || isAdmin();
+      allow update: if isStaff() || isAdmin();
     }
   }
 }

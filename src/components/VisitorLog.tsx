@@ -79,16 +79,16 @@ export default function VisitorLog({ profile }: Props) {
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white p-16 rounded-[40px] shadow-2xl text-center border border-slate-100"
+          className="bg-navy-800 p-16 rounded-[40px] shadow-2xl text-center border border-white/10"
         >
-          <div className="bg-emerald-50 w-24 h-24 rounded-[32px] flex items-center justify-center mx-auto mb-8 text-emerald-500 shadow-inner">
+          <div className="bg-emerald-500/10 w-24 h-24 rounded-[32px] flex items-center justify-center mx-auto mb-8 text-emerald-400 shadow-inner border border-emerald-500/20">
             <CheckCircle2 size={48} />
           </div>
-          <h2 className="text-4xl font-black mb-4 tracking-tight text-navy-900">Welcome to NEU Library!</h2>
-          <p className="text-xl text-slate-500 mb-10 leading-relaxed font-medium">Your visit has been successfully recorded. Enjoy your time in the library!</p>
+          <h2 className="text-4xl font-black mb-4 tracking-tight text-white">Welcome to NEU Library!</h2>
+          <p className="text-xl text-blue-100 mb-10 leading-relaxed font-medium">Your visit has been successfully recorded. Enjoy your time in the library!</p>
           <button
             onClick={() => setSubmitted(false)}
-            className="bg-orange-brown text-white py-5 px-12 rounded-2xl font-black hover:bg-orange-600 transition-all shadow-xl shadow-orange-brown/20 uppercase tracking-widest active:scale-[0.98]"
+            className="bg-white text-navy-900 py-5 px-12 rounded-2xl font-black hover:bg-blue-50 transition-all shadow-xl uppercase tracking-widest"
           >
             Record Another Entry
           </button>
@@ -104,14 +104,14 @@ export default function VisitorLog({ profile }: Props) {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="lg:col-span-3 bg-white p-12 rounded-[40px] shadow-2xl border border-slate-100"
+          className="lg:col-span-3 bg-navy-800 p-12 rounded-[40px] shadow-sm border border-white/10"
         >
           <div className="mb-12 text-center">
-            <div className="inline-block px-4 py-1.5 bg-slate-50 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-400 border border-slate-100 mb-6">
+            <div className="inline-block px-4 py-1.5 bg-white/5 rounded-full text-[10px] font-black uppercase tracking-widest text-white border border-white/10 mb-6">
               Daily Attendance
             </div>
-            <h2 className="text-4xl font-black tracking-tight mb-3 text-navy-900">Library Entry Log</h2>
-            <p className="text-slate-500 font-medium">Please select your primary reason for visiting today.</p>
+            <h2 className="text-4xl font-black tracking-tight mb-3 text-white">Library Entry Log</h2>
+            <p className="text-blue-100 font-medium">Please select your primary reason for visiting today.</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-10">
@@ -125,18 +125,18 @@ export default function VisitorLog({ profile }: Props) {
                     onClick={() => setReason(r.id)}
                     className={`flex flex-col items-center justify-center p-10 rounded-[32px] border-2 transition-all gap-5 group relative overflow-hidden ${
                       reason === r.id 
-                        ? 'border-orange-brown bg-orange-brown/5 text-orange-brown shadow-xl shadow-orange-brown/10' 
-                        : 'border-slate-100 bg-slate-50 text-slate-400 hover:bg-white hover:border-slate-200 hover:text-navy-900'
+                        ? 'border-white bg-white/10 text-white shadow-lg shadow-white/5' 
+                        : 'border-white/10 bg-navy-900 text-blue-200 hover:bg-white/5 hover:border-white/20 hover:text-white'
                     }`}
                   >
-                    <div className={`p-5 rounded-2xl transition-all ${reason === r.id ? 'bg-orange-brown text-white shadow-lg' : 'bg-white text-slate-400 border border-slate-100 group-hover:bg-slate-50 group-hover:border-slate-200 group-hover:text-navy-900'}`}>
+                    <div className={`p-5 rounded-2xl transition-all ${reason === r.id ? 'bg-white text-navy-900 shadow-lg' : 'bg-navy-800 text-blue-200 border border-white/10 group-hover:bg-white/5 group-hover:border-white/20 group-hover:text-white'}`}>
                       <Icon size={36} />
                     </div>
                     <span className="font-black uppercase tracking-[0.15em] text-[11px]">{r.label}</span>
                     {reason === r.id && (
                       <motion.div 
                         layoutId="active-reason"
-                        className="absolute inset-0 border-2 border-orange-brown rounded-[32px] pointer-events-none"
+                        className="absolute inset-0 border-2 border-white rounded-[32px] pointer-events-none"
                       />
                     )}
                   </button>
@@ -147,7 +147,7 @@ export default function VisitorLog({ profile }: Props) {
             <button
               type="submit"
               disabled={loading || !reason}
-              className="w-full bg-orange-brown hover:bg-orange-600 text-white py-5 px-8 rounded-2xl font-black transition-all shadow-xl shadow-orange-brown/20 disabled:opacity-50 mt-4 uppercase tracking-[0.2em] text-xs active:scale-[0.98]"
+              className="w-full bg-white hover:bg-blue-50 text-navy-900 py-5 px-8 rounded-2xl font-black transition-all shadow-xl disabled:opacity-50 mt-4 uppercase tracking-[0.2em] text-xs"
             >
               {loading ? 'Recording...' : 'Confirm Entry'}
             </button>
@@ -160,7 +160,7 @@ export default function VisitorLog({ profile }: Props) {
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="bg-navy-900 p-8 rounded-[40px] shadow-2xl border border-white/5 relative overflow-hidden group"
+            className="bg-navy-900 p-8 rounded-[40px] shadow-lg border border-white/10 relative overflow-hidden group"
           >
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
             <div className="relative z-10">
@@ -181,11 +181,11 @@ export default function VisitorLog({ profile }: Props) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-2xl flex flex-col h-[500px]"
+            className="bg-navy-800 p-8 rounded-[40px] border border-white/10 shadow-sm flex flex-col h-[500px]"
           >
             <div className="flex items-center justify-between mb-8">
-              <h3 className="text-xl font-black text-navy-900 flex items-center gap-3">
-                <div className="bg-slate-50 p-2 rounded-xl text-navy-900 border border-slate-100">
+              <h3 className="text-xl font-black text-white flex items-center gap-3">
+                <div className="bg-white/5 p-2 rounded-xl text-white border border-white/10">
                   <History size={20} />
                 </div>
                 Visit History
@@ -194,22 +194,22 @@ export default function VisitorLog({ profile }: Props) {
 
             <div className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
               {history.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-slate-300 italic text-sm">
+                <div className="h-full flex flex-col items-center justify-center text-blue-200 italic text-sm">
                   <Clock size={40} className="mb-4 opacity-20" />
                   No entries recorded yet.
                 </div>
               ) : (
                 history.map((log) => (
-                  <div key={log.id} className="p-5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:border-slate-200 transition-colors group">
+                  <div key={log.id} className="p-5 bg-navy-900 rounded-2xl border border-white/10 hover:bg-white/5 hover:border-white/20 transition-colors group">
                     <div className="flex justify-between items-start mb-2">
-                      <span className="text-[10px] font-black px-3 py-1 rounded-lg bg-white text-navy-900 uppercase tracking-widest border border-slate-200">
+                      <span className="text-[10px] font-black px-3 py-1 rounded-lg bg-white/10 text-white uppercase tracking-widest border border-white/20">
                         {log.reason}
                       </span>
-                      <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">
+                      <span className="text-[10px] text-blue-200 font-black uppercase tracking-widest">
                         {format(log.timestamp.toDate(), 'MMM d, h:mm a')}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                    <p className="text-xs text-blue-100 font-medium leading-relaxed">
                       Recorded entry at NEU Library Main Branch.
                     </p>
                   </div>

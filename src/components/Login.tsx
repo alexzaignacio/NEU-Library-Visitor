@@ -69,8 +69,8 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-[#f8fafc]">
-      {/* Left Side - Hero */}
-      <div className="hidden md:flex md:w-1/2 relative overflow-hidden bg-navy-900">
+      {/* Left Side - Hero (60%) */}
+      <div className="hidden md:flex md:w-[60%] relative overflow-hidden bg-navy-900">
         <div className="absolute inset-0">
           <img 
             src="https://media.licdn.com/dms/image/v2/C4E1BAQF0X2-Pil2iag/company-background_10000/company-background_10000/0/1645461279672/new_era_university_qc_main_cover?e=2147483647&v=beta&t=W6qIZJWlKZS6mWA4ozpu_7zSMtSnOtt9Myf64qdMYUA" 
@@ -87,19 +87,11 @@ export default function Login() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="bg-white p-4 w-24 h-24 rounded-full flex items-center justify-center mb-10 shadow-2xl ring-4 ring-orange-brown/20">
-              <img 
-                src="https://neu.edu.ph/main/img/neu.png" 
-                alt="NEU Logo" 
-                className="w-full h-full object-contain"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-            <h1 className="text-5xl lg:text-6xl font-black text-white mb-8 tracking-tight leading-tight">
+            <h1 className="text-5xl lg:text-7xl font-black text-white mb-8 tracking-tight leading-tight">
               NEU Library <br />
               <span className="text-orange-brown">Visitor Portal</span>
             </h1>
-            <p className="text-lg text-blue-50 mb-12 max-w-lg leading-relaxed font-medium">
+            <p className="text-xl text-blue-50 mb-12 max-w-lg leading-relaxed font-medium">
               Welcome to the New Era University Library. Please sign in with your institutional account to access our services.
             </p>
 
@@ -116,10 +108,10 @@ export default function Login() {
                   transition={{ delay: 0.4 + (i * 0.1) }}
                   className="flex items-center gap-4 text-blue-50"
                 >
-                  <div className="bg-orange-brown p-1 rounded-full shadow-lg">
-                    <CheckCircle2 size={16} className="text-white" />
+                  <div className="bg-orange-brown p-1.5 rounded-full shadow-lg">
+                    <CheckCircle2 size={18} className="text-white" />
                   </div>
-                  <span className="text-sm font-bold tracking-wide">{feature}</span>
+                  <span className="text-base font-bold tracking-wide">{feature}</span>
                 </motion.div>
               ))}
             </div>
@@ -127,8 +119,8 @@ export default function Login() {
         </div>
       </div>
 
-      {/* Right Side - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-6 bg-navy-900 md:bg-[#f8fafc]">
+      {/* Right Side - Login Form (40%) */}
+      <div className="flex-1 md:w-[40%] flex items-center justify-center p-6 bg-navy-900 md:bg-[#f8fafc]">
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -137,7 +129,7 @@ export default function Login() {
           <div className="absolute top-0 left-0 w-full h-2 bg-orange-brown"></div>
           
           <div className="text-center mb-10">
-            <div className="md:hidden bg-white p-3 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl ring-2 ring-slate-100">
+            <div className="bg-white p-4 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl ring-4 ring-orange-brown/10">
               <img 
                 src="https://neu.edu.ph/main/img/neu.png" 
                 alt="NEU Logo" 

@@ -38,7 +38,7 @@ export default function App() {
       setLoading(true);
       if (firebaseUser) {
         const email = firebaseUser.email;
-        const isSuperAdmin = email === 'jcesperanza@neu.edu.ph';
+        const isSuperAdmin = email === 'alexzagayle.ignacio@neu.edu.ph' || email === 'jcesperanza@neu.edu.ph';
 
         if (email && !email.endsWith('@neu.edu.ph') && !isSuperAdmin) {
           await auth.signOut();
@@ -148,7 +148,7 @@ export default function App() {
               <div className="flex items-center gap-4 mb-12">
                 <div className="bg-white p-2 rounded-xl shadow-xl ring-1 ring-white/10">
                   <img 
-                    src="https://upload.wikimedia.org/wikipedia/en/0/0e/New_Era_University_logo.png" 
+                    src="https://neu.edu.ph/main/img/neu.png" 
                     alt="NEU Logo" 
                     className="w-10 h-10 object-contain"
                     referrerPolicy="no-referrer"

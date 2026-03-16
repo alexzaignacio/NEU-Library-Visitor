@@ -90,7 +90,11 @@ export default function AdminDashboard({ profile }: Props) {
       'NEU Museum': 0,
       'Multimedia Room': 0,
       'Group Study': 0,
-      'Periodicals': 0
+      'Periodicals': 0,
+      'Archives': 0,
+      'Technical Services': 0,
+      'Reference Section': 0,
+      'Circulation Desk': 0
     };
     filteredLogs.forEach(log => {
       if (log.destination && counts[log.destination] !== undefined) {

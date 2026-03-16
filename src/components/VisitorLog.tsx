@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db, collection, addDoc, Timestamp, query, where, orderBy, onSnapshot } from '../firebase';
 import { UserProfile, VisitLog } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
-import { BookOpen, Search, Monitor, GraduationCap, CheckCircle2, History, TrendingUp, Clock, Landmark, PlayCircle, Users, Library } from 'lucide-react';
+import { BookOpen, Search, Monitor, GraduationCap, CheckCircle2, History, TrendingUp, Clock, Landmark, PlayCircle, Users, Library, Archive, Settings, Info, CreditCard } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { format } from 'date-fns';
 
@@ -19,6 +19,10 @@ const DESTINATIONS = [
   { id: 'multimedia', label: 'Multimedia Room', icon: PlayCircle },
   { id: 'group', label: 'Group Study', icon: Users },
   { id: 'periodicals', label: 'Periodicals', icon: Library },
+  { id: 'archives', label: 'Archives', icon: Archive },
+  { id: 'technical', label: 'Technical Services', icon: Settings },
+  { id: 'reference', label: 'Reference Section', icon: Info },
+  { id: 'circulation', label: 'Circulation Desk', icon: CreditCard },
 ];
 
 export default function VisitorLog({ profile }: Props) {
@@ -119,7 +123,7 @@ export default function VisitorLog({ profile }: Props) {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-10">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {DESTINATIONS.map((d) => {
                 const Icon = d.icon;
                 return (

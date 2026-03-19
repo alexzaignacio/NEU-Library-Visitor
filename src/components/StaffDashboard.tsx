@@ -23,6 +23,7 @@ import { format } from 'date-fns';
 
 interface Props {
   profile: UserProfile;
+  totalEngagement: number;
 }
 
 type StaffModule = 'main' | 'inventory' | 'facility' | 'security' | 'config';
@@ -62,7 +63,7 @@ const STAFF_TASKS = [
   }
 ];
 
-export default function StaffDashboard({ profile }: Props) {
+export default function StaffDashboard({ profile, totalEngagement }: Props) {
   const [activeModule, setActiveModule] = useState<StaffModule>('main');
   const [inventory, setInventory] = useState<any[]>([]);
   const [facilityRequests, setFacilityRequests] = useState<any[]>([]);
@@ -348,6 +349,10 @@ export default function StaffDashboard({ profile }: Props) {
                 <div className="flex items-center gap-4 mb-4">
                   <span className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-lg text-[10px] font-black uppercase tracking-widest text-white border border-white/20">
                     Staff Operations
+                  </span>
+                  <span className="px-3 py-1 bg-emerald-500/20 backdrop-blur-md rounded-lg text-[10px] font-black uppercase tracking-widest text-emerald-400 border border-emerald-500/20 flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
+                    {totalEngagement.toLocaleString()} Live Engagement
                   </span>
                 </div>
                 <h2 className="text-4xl font-black text-white mb-2 tracking-tight">Staff Portal: {profile.displayName}</h2>

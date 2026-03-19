@@ -24,12 +24,14 @@ import { toast } from 'react-hot-toast';
 
 interface Props {
   profile: UserProfile;
+  totalEngagement: number;
+  activeTab: Tab;
+  setActiveTab: (tab: Tab) => void;
 }
 
 type Tab = 'stats' | 'logs' | 'users' | 'approvals' | 'simulation';
 
-export default function AdminDashboard({ profile }: Props) {
-  const [activeTab, setActiveTab] = useState<Tab>('stats');
+export default function AdminDashboard({ profile, totalEngagement, activeTab, setActiveTab }: Props) {
   const [logs, setLogs] = useState<VisitLog[]>([]);
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -158,28 +160,6 @@ export default function AdminDashboard({ profile }: Props) {
 
   return (
     <div className="space-y-10">
-      {/* Navigation Tabs */}
-      <div className="flex gap-2 bg-white p-2 rounded-2xl shadow-2xl border border-navy-900/10 w-fit mx-auto">
-        {(['stats', 'logs', 'users', 'approvals', 'simulation'] as Tab[]).map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-10 py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all relative ${
-              activeTab === tab 
-                ? 'bg-orange-brown text-white shadow-xl shadow-orange-brown/20' 
-                : 'text-slate-400 hover:text-navy-900 hover:bg-slate-50'
-            }`}
-          >
-            {tab === 'stats' ? 'Analytics' : tab === 'simulation' ? 'POV POV' : tab}
-            {tab === 'approvals' && pendingUsers.length > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center border-2 border-white">
-                {pendingUsers.length}
-              </span>
-            )}
-          </button>
-        ))}
-      </div>
-
       <AnimatePresence mode="wait">
         {activeTab === 'stats' && (
           <motion.div 
@@ -244,8 +224,8 @@ export default function AdminDashboard({ profile }: Props) {
                       <TrendingUp size={12} /> Live
                     </span>
                   </div>
-                  <p className="text-blue-100 text-[11px] uppercase tracking-[0.2em] font-black mb-2">Total Visitors</p>
-                  <h3 className="text-6xl font-black tracking-tighter text-white">{filteredLogs.length}</h3>
+                  <p className="text-blue-100 text-[11px] uppercase tracking-[0.2em] font-black mb-2">Total Engagement</p>
+                  <h3 className="text-6xl font-black tracking-tighter text-white">{totalEngagement.toLocaleString()}</h3>
                 </div>
               </div>
 

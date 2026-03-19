@@ -8,6 +8,7 @@ import { format } from 'date-fns';
 
 interface Props {
   profile: UserProfile;
+  totalEngagement: number;
 }
 
 const DESTINATIONS = [
@@ -25,7 +26,7 @@ const DESTINATIONS = [
   { id: 'circulation', label: 'Circulation Desk', icon: CreditCard },
 ];
 
-export default function VisitorLog({ profile }: Props) {
+export default function VisitorLog({ profile, totalEngagement }: Props) {
   const [destination, setDestination] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);

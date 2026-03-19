@@ -21,6 +21,7 @@ import { toast } from 'react-hot-toast';
 
 interface Props {
   profile: UserProfile;
+  totalEngagement: number;
 }
 
 type FacultyModule = 'main' | 'reservation' | 'resource' | 'curriculum' | 'assistance';
@@ -60,7 +61,7 @@ const FACULTY_FEATURES = [
   }
 ];
 
-export default function FacultyDashboard({ profile }: Props) {
+export default function FacultyDashboard({ profile, totalEngagement }: Props) {
   const [activeModule, setActiveModule] = useState<FacultyModule>('main');
   const [loading, setLoading] = useState(false);
 
@@ -265,6 +266,10 @@ export default function FacultyDashboard({ profile }: Props) {
                 <div className="flex items-center gap-4 mb-4">
                   <span className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-lg text-[10px] font-black uppercase tracking-widest text-white border border-white/20">
                     Faculty Portal
+                  </span>
+                  <span className="px-3 py-1 bg-emerald-500/20 backdrop-blur-md rounded-lg text-[10px] font-black uppercase tracking-widest text-emerald-400 border border-emerald-500/20 flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
+                    {totalEngagement.toLocaleString()} Live Engagement
                   </span>
                 </div>
                 <h2 className="text-4xl font-black text-white mb-2 tracking-tight">Welcome back, Prof. {profile.displayName.split(' ')[0]}</h2>

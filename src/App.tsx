@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { auth, db, onAuthStateChanged, doc, getDoc, setDoc, Timestamp, updateDoc, getRedirectResult } from './firebase';
+import { auth, db, onAuthStateChanged, doc, getDoc, setDoc, Timestamp, updateDoc, getRedirectResult, query, collection, onSnapshot, where } from './firebase';
 import { UserProfile } from './types';
 import Login from './components/Login';
 import ProfileSetup from './components/ProfileSetup';
@@ -9,14 +9,36 @@ import FacultyDashboard from './components/FacultyDashboard';
 import StaffDashboard from './components/StaffDashboard';
 import { Toaster, toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'motion/react';
-import { LogOut, Library, User, ShieldCheck } from 'lucide-react';
+import { LogOut, Library, User, ShieldCheck, BarChart3, History, Users, CheckCircle } from 'lucide-react';
 
 export default function App() {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState<'admin' | 'faculty' | 'student' | 'staff'>('admin');
+  const [viewMode, setViewMode] = useState<'admin' | 'faculty' | 'student' | 'staff'>('student');
+  const [adminTab, setAdminTab] = useState<'stats' | 'logs' | 'users' | 'approvals' | 'simulation'>('stats');
   const [isSimulating, setIsSimulating] = useState(false);
+  const [totalEngagement, setTotalEngagement] = useState(0);
+  const [pendingCount, setPendingCount] = useState(0);
+
+  useEffect(() => {
+    // Global Engagement Counter Listener
+    const q = query(collection(db, 'logs'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setTotalEngagement(snapshot.size);
+    });
+
+    // Pending Approvals Listener
+    const pendingQuery = query(collection(db, 'users'), where('status', '==', 'pending_approval'));
+    const unsubscribePending = onSnapshot(pendingQuery, (snapshot) => {
+      setPendingCount(snapshot.size);
+    });
+
+    return () => {
+      unsubscribe();
+      unsubscribePending();
+    };
+  }, []);
 
   useEffect(() => {
     const handleSimulation = (e: any) => {
@@ -90,10 +112,12 @@ export default function App() {
             setProfile(updatedProfile);
             
             // Set initial view mode based on role
-            if (data.role === 'admin') setViewMode('admin');
-            else if (data.classification === 'Faculty') setViewMode('faculty');
-            else if (data.classification === 'Staff') setViewMode('staff');
-            else setViewMode('student');
+            if (!isSimulating) {
+              if (data.role === 'admin') setViewMode('admin');
+              else if (data.classification === 'Faculty') setViewMode('faculty');
+              else if (data.classification === 'Staff') setViewMode('staff');
+              else setViewMode('student');
+            }
           } else {
             const isInitialAdmin = isSuperAdmin;
             const newProfile: UserProfile = {
@@ -175,30 +199,107 @@ export default function App() {
               </div>
 
               <nav className="space-y-2">
-                <button
-                  onClick={() => setViewMode(profile?.role === 'admin' ? 'admin' : (profile?.classification?.toLowerCase() as any || 'student'))}
-                  className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all ${
-                    viewMode !== 'admin' || profile?.role !== 'admin'
-                      ? 'bg-orange-brown text-white shadow-lg shadow-orange-brown/20'
-                      : 'text-blue-200 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  <Library size={18} />
-                  Dashboard
-                </button>
-                
-                {profile?.role === 'admin' && (
+                {profile?.role !== 'admin' ? (
                   <button
-                    onClick={() => setViewMode('admin')}
+                    onClick={() => setViewMode(profile?.classification?.toLowerCase() as any || 'student')}
                     className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all ${
-                      viewMode === 'admin'
+                      viewMode !== 'admin'
                         ? 'bg-orange-brown text-white shadow-lg shadow-orange-brown/20'
                         : 'text-blue-200 hover:text-white hover:bg-white/5'
                     }`}
                   >
-                    <ShieldCheck size={18} />
-                    Admin Panel
+                    <Library size={18} />
+                    Dashboard
                   </button>
+                ) : (
+                  <>
+                    <div className="px-6 py-4">
+                      <p className="text-[9px] text-blue-400 font-black uppercase tracking-[0.2em] mb-4">Main Menu</p>
+                      <div className="space-y-2">
+                        <button
+                          onClick={() => {
+                            setViewMode(profile?.classification?.toLowerCase() as any || 'student');
+                            setIsSimulating(false);
+                          }}
+                          className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all ${
+                            viewMode !== 'admin'
+                              ? 'bg-orange-brown text-white shadow-lg shadow-orange-brown/20'
+                              : 'text-blue-200 hover:text-white hover:bg-white/5'
+                          }`}
+                        >
+                          <Library size={18} />
+                          Visitor View
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="px-6 py-4">
+                      <p className="text-[9px] text-blue-400 font-black uppercase tracking-[0.2em] mb-4">Admin Controls</p>
+                      <div className="space-y-2">
+                        <button
+                          onClick={() => {
+                            setViewMode('admin');
+                            setAdminTab('stats');
+                          }}
+                          className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all ${
+                            viewMode === 'admin' && adminTab === 'stats'
+                              ? 'bg-orange-brown text-white shadow-lg shadow-orange-brown/20'
+                              : 'text-blue-200 hover:text-white hover:bg-white/5'
+                          }`}
+                        >
+                          <BarChart3 size={18} />
+                          Analytics
+                        </button>
+                        <button
+                          onClick={() => {
+                            setViewMode('admin');
+                            setAdminTab('logs');
+                          }}
+                          className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all ${
+                            viewMode === 'admin' && adminTab === 'logs'
+                              ? 'bg-orange-brown text-white shadow-lg shadow-orange-brown/20'
+                              : 'text-blue-200 hover:text-white hover:bg-white/5'
+                          }`}
+                        >
+                          <History size={18} />
+                          Logs
+                        </button>
+                        <button
+                          onClick={() => {
+                            setViewMode('admin');
+                            setAdminTab('users');
+                          }}
+                          className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all ${
+                            viewMode === 'admin' && adminTab === 'users'
+                              ? 'bg-orange-brown text-white shadow-lg shadow-orange-brown/20'
+                              : 'text-blue-200 hover:text-white hover:bg-white/5'
+                          }`}
+                        >
+                          <Users size={18} />
+                          Users
+                        </button>
+                        <button
+                          onClick={() => {
+                            setViewMode('admin');
+                            setAdminTab('approvals');
+                          }}
+                          className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all relative ${
+                            viewMode === 'admin' && adminTab === 'approvals'
+                              ? 'bg-orange-brown text-white shadow-lg shadow-orange-brown/20'
+                              : 'text-blue-200 hover:text-white hover:bg-white/5'
+                          }`}
+                        >
+                          <ShieldCheck size={18} />
+                          Approvals
+                          {pendingCount > 0 && (
+                            <span className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 bg-red-500 text-white text-[9px] rounded-full flex items-center justify-center border-2 border-navy-900">
+                              {pendingCount}
+                            </span>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </>
                 )}
               </nav>
             </div>
@@ -306,7 +407,12 @@ export default function App() {
                     </motion.div>
                   ) : (viewMode === 'admin' && profile?.role === 'admin') ? (
                     <motion.div key="admin" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                      <AdminDashboard profile={profile} />
+                      <AdminDashboard 
+                        profile={profile} 
+                        totalEngagement={totalEngagement} 
+                        activeTab={adminTab}
+                        setActiveTab={setAdminTab}
+                      />
                     </motion.div>
                   ) : !profile?.college_office || !profile?.classification ? (
                     <motion.div key="setup" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
@@ -314,15 +420,15 @@ export default function App() {
                     </motion.div>
                   ) : viewMode === 'faculty' ? (
                     <motion.div key="faculty" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                      <FacultyDashboard profile={profile} />
+                      <FacultyDashboard profile={profile} totalEngagement={totalEngagement} />
                     </motion.div>
                   ) : viewMode === 'staff' ? (
                     <motion.div key="staff" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                      <StaffDashboard profile={profile} />
+                      <StaffDashboard profile={profile} totalEngagement={totalEngagement} />
                     </motion.div>
                   ) : (
                     <motion.div key="student" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                      <VisitorLog profile={profile} />
+                      <VisitorLog profile={profile!} totalEngagement={totalEngagement} />
                     </motion.div>
                   )}
                 </AnimatePresence>

@@ -7,6 +7,7 @@ import VisitorLog from './components/VisitorLog';
 import AdminDashboard from './components/AdminDashboard';
 import FacultyDashboard from './components/FacultyDashboard';
 import StaffDashboard from './components/StaffDashboard';
+import ErrorBoundary from './components/ErrorBoundary';
 import { Toaster, toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'motion/react';
 import { LogOut, Library, User, ShieldCheck, BarChart3, History, Users, CheckCircle } from 'lucide-react';
@@ -370,68 +371,70 @@ export default function App() {
             {/* Content */}
             <main className="flex-1 overflow-y-auto bg-[#F8FAFC]">
               <div className="p-8 lg:p-12">
-                <AnimatePresence mode="wait">
-                  {profile?.isBlocked ? (
-                    <motion.div 
-                      key="blocked"
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      className="bg-white p-16 rounded-[40px] shadow-2xl text-center border border-slate-100 max-w-2xl mx-auto mt-10"
-                    >
-                      <div className="w-20 h-20 bg-red-50 rounded-3xl flex items-center justify-center mx-auto mb-8 text-red-500 shadow-inner">
-                        <ShieldCheck size={48} />
-                      </div>
-                      <h2 className="text-4xl font-black text-navy-900 mb-4 tracking-tight">Access Denied</h2>
-                      <p className="text-slate-500 max-w-md mx-auto leading-relaxed font-medium">Your account has been restricted from accessing the library portal. Please contact the University Administration for resolution.</p>
-                    </motion.div>
-                  ) : (profile?.status === 'pending_approval' && profile?.role !== 'admin') ? (
-                    <motion.div 
-                      key="pending"
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      className="bg-white p-16 rounded-[40px] shadow-2xl text-center border border-slate-100 max-w-2xl mx-auto mt-10"
-                    >
-                      <div className="w-20 h-20 bg-orange-50 rounded-3xl flex items-center justify-center mx-auto mb-8 text-orange-brown shadow-inner">
-                        <ShieldCheck size={48} />
-                      </div>
-                      <h2 className="text-4xl font-black text-navy-900 mb-4 tracking-tight">Pending Approval</h2>
-                      <p className="text-slate-500 max-w-md mx-auto leading-relaxed font-medium">Your account is currently awaiting administrative approval. Please check back later or contact your department head.</p>
-                      <button 
-                        onClick={handleLogout}
-                        className="mt-8 px-10 py-4 bg-navy-900 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-navy-800 transition-all shadow-xl shadow-navy-900/20"
+                <ErrorBoundary>
+                  <AnimatePresence mode="wait">
+                    {profile?.isBlocked ? (
+                      <motion.div 
+                        key="blocked"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className="bg-white p-16 rounded-[40px] shadow-2xl text-center border border-slate-100 max-w-2xl mx-auto mt-10"
                       >
-                        Sign Out
-                      </button>
-                    </motion.div>
-                  ) : (viewMode === 'admin' && profile?.role === 'admin') ? (
-                    <motion.div key="admin" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                      <AdminDashboard 
-                        profile={profile} 
-                        totalEngagement={totalEngagement} 
-                        activeTab={adminTab}
-                        setActiveTab={setAdminTab}
-                      />
-                    </motion.div>
-                  ) : !profile?.college_office || !profile?.classification ? (
-                    <motion.div key="setup" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                      <ProfileSetup profile={profile} onUpdate={(updated) => setProfile(updated)} />
-                    </motion.div>
-                  ) : viewMode === 'faculty' ? (
-                    <motion.div key="faculty" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                      <FacultyDashboard profile={profile} totalEngagement={totalEngagement} />
-                    </motion.div>
-                  ) : viewMode === 'staff' ? (
-                    <motion.div key="staff" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                      <StaffDashboard profile={profile} totalEngagement={totalEngagement} />
-                    </motion.div>
-                  ) : (
-                    <motion.div key="student" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                      <VisitorLog profile={profile!} totalEngagement={totalEngagement} />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                        <div className="w-20 h-20 bg-red-50 rounded-3xl flex items-center justify-center mx-auto mb-8 text-red-500 shadow-inner">
+                          <ShieldCheck size={48} />
+                        </div>
+                        <h2 className="text-4xl font-black text-navy-900 mb-4 tracking-tight">Access Denied</h2>
+                        <p className="text-slate-500 max-w-md mx-auto leading-relaxed font-medium">Your account has been restricted from accessing the library portal. Please contact the University Administration for resolution.</p>
+                      </motion.div>
+                    ) : (profile?.status === 'pending_approval' && profile?.role !== 'admin') ? (
+                      <motion.div 
+                        key="pending"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className="bg-white p-16 rounded-[40px] shadow-2xl text-center border border-slate-100 max-w-2xl mx-auto mt-10"
+                      >
+                        <div className="w-20 h-20 bg-orange-50 rounded-3xl flex items-center justify-center mx-auto mb-8 text-orange-brown shadow-inner">
+                          <ShieldCheck size={48} />
+                        </div>
+                        <h2 className="text-4xl font-black text-navy-900 mb-4 tracking-tight">Pending Approval</h2>
+                        <p className="text-slate-500 max-w-md mx-auto leading-relaxed font-medium">Your account is currently awaiting administrative approval. Please check back later or contact your department head.</p>
+                        <button 
+                          onClick={handleLogout}
+                          className="mt-8 px-10 py-4 bg-navy-900 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-navy-800 transition-all shadow-xl shadow-navy-900/20"
+                        >
+                          Sign Out
+                        </button>
+                      </motion.div>
+                    ) : (viewMode === 'admin' && profile?.role === 'admin') ? (
+                      <motion.div key="admin" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                        <AdminDashboard 
+                          profile={profile} 
+                          totalEngagement={totalEngagement} 
+                          activeTab={adminTab}
+                          setActiveTab={setAdminTab}
+                        />
+                      </motion.div>
+                    ) : !profile?.college_office || !profile?.classification ? (
+                      <motion.div key="setup" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                        <ProfileSetup profile={profile} onUpdate={(updated) => setProfile(updated)} />
+                      </motion.div>
+                    ) : viewMode === 'faculty' ? (
+                      <motion.div key="faculty" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                        <FacultyDashboard profile={profile} totalEngagement={totalEngagement} />
+                      </motion.div>
+                    ) : viewMode === 'staff' ? (
+                      <motion.div key="staff" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                        <StaffDashboard profile={profile} totalEngagement={totalEngagement} />
+                      </motion.div>
+                    ) : (
+                      <motion.div key="student" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                        <VisitorLog profile={profile!} totalEngagement={totalEngagement} />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </ErrorBoundary>
               </div>
             </main>
           </div>

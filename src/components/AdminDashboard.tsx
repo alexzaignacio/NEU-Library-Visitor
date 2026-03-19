@@ -99,7 +99,7 @@ export default function AdminDashboard({ profile, totalEngagement, activeTab, se
       'Circulation Desk': 0
     };
     filteredLogs.forEach(log => {
-      if (log.destination && counts[log.destination] !== undefined) {
+      if (log.destination && typeof log.destination === 'string' && counts[log.destination] !== undefined) {
         counts[log.destination]++;
       }
     });
@@ -116,7 +116,7 @@ export default function AdminDashboard({ profile, totalEngagement, activeTab, se
       staff: 0
     };
     filteredLogs.forEach(log => {
-      if (log.classification && counts[log.classification.toLowerCase()] !== undefined) {
+      if (log.classification && typeof log.classification === 'string' && counts[log.classification.toLowerCase()] !== undefined) {
         counts[log.classification.toLowerCase()]++;
       }
     });
@@ -149,6 +149,12 @@ export default function AdminDashboard({ profile, totalEngagement, activeTab, se
   };
 
   const pendingUsers = users.filter(u => u.status === 'pending_approval');
+
+  const topDestination = useMemo(() => {
+    if (statsData.length === 0) return 'N/A';
+    const sorted = [...statsData].sort((a, b) => b.value - a.value);
+    return sorted[0]?.value > 0 ? sorted[0].name : 'N/A';
+  }, [statsData]);
 
   const filteredUsers = users.filter(u => 
     (u.displayName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -239,9 +245,7 @@ export default function AdminDashboard({ profile, totalEngagement, activeTab, se
                   </div>
                   <p className="text-slate-400 text-[11px] uppercase tracking-[0.2em] font-black mb-2">Top Destination</p>
                   <h3 className="text-4xl font-black tracking-tight text-navy-900">
-                    {statsData.sort((a, b) => b.value - a.value)[0]?.value > 0 
-                      ? statsData.sort((a, b) => b.value - a.value)[0]?.name 
-                      : 'N/A'}
+                    {topDestination}
                   </h3>
                 </div>
               </div>

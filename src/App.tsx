@@ -56,23 +56,24 @@ export default function App() {
 
   useEffect(() => {
     // Handle redirect result for mobile auth
-    const handleRedirect = async () => {
+    const initAuth = async () => {
       try {
         const result = await getRedirectResult(auth);
         if (result) {
-          toast.success('Successfully signed in!');
+          console.log("Successfully handled redirect sign-in");
+          // The onAuthStateChanged listener will pick up the user
         }
       } catch (error: any) {
         if (error.code !== 'auth/no-current-user') {
           console.error("Redirect Auth Error:", error);
-          toast.error(`Auth Error: ${error.message}`);
+          toast.error(`Authentication Error: ${error.message}`);
         }
       }
     };
-    handleRedirect();
+
+    initAuth();
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      setLoading(true);
       if (firebaseUser) {
         const email = firebaseUser.email;
         const isSuperAdmin = email === 'alexzagayle.ignacio@neu.edu.ph' || email === 'jcesperanza@neu.edu.ph';
@@ -101,7 +102,7 @@ export default function App() {
               return;
             }
 
-            // Auto-upgrade jcesperanza to admin if not already
+            // Auto-upgrade admins if not already
             if (isSuperAdmin && data.role !== 'admin') {
               await updateDoc(userRef, { role: 'admin', status: 'approved' });
               data.role = 'admin';
@@ -125,14 +126,12 @@ export default function App() {
               uid: firebaseUser.uid,
               email: firebaseUser.email || '',
               displayName: firebaseUser.displayName || 'Anonymous',
-              role: isInitialAdmin ? 'admin' : 'student', // Default to student if not super admin
-              status: isInitialAdmin ? 'approved' : 'approved', // We'll set status in ProfileSetup or here
+              role: isInitialAdmin ? 'admin' : 'student',
+              status: 'approved',
               isBlocked: false,
               lastLogin: Timestamp.now(),
               createdAt: Timestamp.now(),
             };
-            // Actually, let's set status based on role in ProfileSetup.
-            // For now, just create the doc.
             await setDoc(userRef, newProfile);
             setProfile(newProfile);
             setViewMode(isInitialAdmin ? 'admin' : 'student');
@@ -150,7 +149,7 @@ export default function App() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [isSimulating]);
 
   const handleLogout = async () => {
     try {

@@ -13,6 +13,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const handleGoogleLogin = async () => {
+    setLoading(true);
     try {
       const result = await signInWithGoogle();
       
@@ -24,6 +25,7 @@ export default function Login() {
         if (userEmail && !userEmail.endsWith('@neu.edu.ph') && !isSuperAdmin) {
           await auth.signOut();
           toast.error('Please use your @neu.edu.ph institutional email.');
+          setLoading(false);
           return;
         }
         
@@ -33,6 +35,7 @@ export default function Login() {
       if (error.code !== 'auth/no-current-user') {
         toast.error(`Sign-in failed: ${error.message || 'Unknown error'}`);
       }
+      setLoading(false);
     }
   };
 
@@ -145,10 +148,24 @@ export default function Login() {
           <div className="space-y-4 md:space-y-5">
             <button
               onClick={handleGoogleLogin}
-              className="w-full flex items-center justify-center gap-3 bg-navy-800 hover:bg-navy-900 text-white py-3.5 md:py-4 rounded-2xl font-black uppercase tracking-widest transition-all shadow-xl shadow-navy-900/10 active:scale-[0.98] text-xs md:text-sm"
+              disabled={loading}
+              className="w-full flex items-center justify-center gap-3 bg-navy-800 hover:bg-navy-900 text-white py-3.5 md:py-4 rounded-2xl font-black uppercase tracking-widest transition-all shadow-xl shadow-navy-900/10 active:scale-[0.98] text-xs md:text-sm disabled:opacity-50"
             >
-              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5 bg-white rounded-full p-0.5" />
-              Sign in with Google
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <motion.div 
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full"
+                  />
+                  Processing...
+                </span>
+              ) : (
+                <>
+                  <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5 bg-white rounded-full p-0.5" />
+                  Sign in with Google
+                </>
+              )}
             </button>
 
             <div className="relative flex items-center py-1">

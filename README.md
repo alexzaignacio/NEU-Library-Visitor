@@ -1,20 +1,26 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# NEU Library Visitor Monitoring System
 
-# Run and deploy your AI Studio app
+A digital solution for tracking and managing visitor logs at the New Era University Library. This application streamlines the check-in/check-out process for students and faculty.
 
-This contains everything you need to run your app locally.
+## Live Demo
+Access the deployed application here:  
+**[https://neu-library-visitor-reyp.vercel.app/](https://neu-library-visitor-reyp.vercel.app/)**
 
-View your app in AI Studio: https://ai.studio/apps/61bd33f0-d741-47d4-baff-f9c84ab3f357
+## Features
+- **Visitor Logs:** Efficiently record entry and exit times.
+- **Student ID Integration:** Quick lookup or scanning for registered library users.
+- **Real-time Dashboard:** Monitor current library occupancy and daily visitor statistics.
+- **Responsive Interface:** Works seamlessly on tablets at the library entrance and desktop computers.
 
-## Run Locally
+## Tech Stack
+- **Frontend:** Next.js / React (Deployed via Vercel)
+- **Styling:** Tailwind CSS
+- **Database/Backend:** [Your Database, e.g., Supabase / MongoDB / Firebase]
 
-**Prerequisites:**  Node.js
+## Local Setup
 
+To run the project locally, follow these steps:
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/alexzaignacio/NEU-Library-Visitor.git](https://github.com/alexzaignacio/NEU-Library-Visitor.git)
